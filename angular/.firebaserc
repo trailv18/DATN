@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "upload-image-eb57a": {
+      "hosting": {
+        "LibraryManagementProject": [
+          "upload-image-eb57a"
+        ]
+      }
+    }
+  }
+}

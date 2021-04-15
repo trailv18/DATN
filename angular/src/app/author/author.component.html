@@ -1,0 +1,94 @@
+<div [@routerTransition]>
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-6">
+            <h1>Author</h1>
+          </div>
+          <div class="col-6 text-right">
+            <a href="javascript:;" class="btn bg-blue" (click)="createAuthor()">
+              <i class="fa fa-plus-square"></i>
+              Create
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+  
+    <section class="content px-2">
+      <div class="container-fluid">
+        <div class="card">
+          <div class="card-header">
+            <div class="input-group">
+             
+              <input type="text" class="form-control" name="name" [placeholder]="'SearchWithThreeDot' | localize"
+                [(ngModel)]="name" />
+
+                <div class="input-group-prepend">
+                  <button type="button" class="btn bg-blue" (click)="filter()">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </div>
+
+                <div class="input-group-prepend">
+                  <button style="padding-left: 15px;" type="button" class="btn bg-secondary mx-3" (click)="setup()">
+                    Clear
+                  </button>
+                </div>
+            </div>
+          </div>
+          <div class="card-body table-responsive p-0">
+            <table class="table table-hover text-nowrap">
+              <thead class="bg-light">
+                <tr>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Address</th>
+                  <th>Year of Birth</th>
+                  <th style="width: 200px;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor=" let author of authors | paginate: { itemsPerPage: pageSize, currentPage: pageNumber, totalItems:count }">
+                  <td>{{author.name }}</td>
+                  <td>{{author.phone}}</td>
+                  <td>{{author.address}}</td>
+                  <td>{{author.yearOfBirth}}</td>
+                  <td>
+                    <button type="button" class="btn btn-sm bg-secondary" (click)="editAuthor(author)">
+                      <i class="fas fa-pencil-alt"></i>
+                      Edit
+                    </button>
+                    <button type="button" class="btn btn-sm bg-danger mx-2" (click)="delete(author)">
+                      <i class="fas fa-trash"></i>
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer bg-light border-top">
+            <div class="row">
+              <div class="col-sm-4 col-12 text-sm-left text-center">
+                <button class="btn btn-secondary" (click)="refresh()">
+                  <i class="fas fa-redo-alt"></i>
+                </button>
+              </div>
+              <div class="col-sm-4 col-12 text-center">
+                <p class="mb-0 my-2">
+                  {{ "TotalRecordsCount" | localize: count }}
+                </p>
+              </div>
+              <div class="col-sm-4 col-12">
+                <div class="float-sm-right m-auto">
+                  <pagination-controls (pageChange)="onChangePage($event)"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>

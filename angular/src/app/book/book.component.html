@@ -1,0 +1,136 @@
+<div [@routerTransition]>
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-6">
+            <h1>Book</h1>
+          </div>
+          <div class="col-6 text-right">
+            <a href="javascript:;" class="btn bg-blue" (click)="createBook()">
+              <i class="fa fa-plus-square"></i>
+              Create
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+  
+    <section class="content px-2">
+      <div class="container-fluid">
+        <div class="card">
+          <div class="card-header">
+            <div class="input-group">
+              <div class="container">
+                <div class="row">
+
+                  <div class="col-sm">
+                    <input type="text" class="form-control" name="name" placeholder="Search..." [(ngModel)]="name" />
+                  </div>
+
+                  <div class="col-sm">
+                    <select class="form-control" [(ngModel)]="categoryName"> 
+                      <option value="">--Category--</option>
+                      <option *ngFor=" let category of categories"
+                          [value]="category.name">
+                          {{category.name}}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="col-sm">
+                    <select class="form-control" [(ngModel)]="authorName">
+                      <option value="">--Author--</option>
+                      <option  *ngFor=" let author of authors"
+                          [value]="author.name">
+                          {{author.name}}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="col-sm">
+                    <select class="form-control" [(ngModel)]="publisherName">
+                      <option value="">--Publisher--</option>
+                      <option *ngFor=" let publisher of publishers"
+                          [value]="publisher.name">
+                          {{publisher.name}}
+                      </option>
+                    </select>
+                  </div>
+
+                <div class="col-sm">
+                  <button type="button" class="btn bg-blue" (click)="filter()">
+                    <i class="fas fa-search"></i>
+                  </button>
+
+                  <button type="button" class="btn bg-secondary mx-3" (click)="setup()">
+                    Clear
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          </div>
+          <div class="card-body table-responsive p-0">
+            <table class="table">
+              <thead class="bg-light">
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Price Borrow</th>
+                  <th scope="col">Stock</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Author</th>
+                  <th scope="col">Publisher</th>
+                  <th scope="col">Image</th>
+                  <th scope="col">Year Public</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr scope="row" *ngFor=" let book of books | paginate: { itemsPerPage: pageSize, currentPage: pageNumber, totalItems:count }">
+                  <td>{{book.name }}</td>
+                  <td>{{book.priceBorrow}}</td>
+                  <td>{{book.stock}}</td>
+                  <td>{{book.category}}</td>
+                  <td>{{book.author}}</td>
+                  <td>{{book.publisher}}</td>
+                  <td><img [src]="sanitizer.bypassSecurityTrustUrl(book.urlImage)" width="150" height="150"></td>
+                  <td>{{book.year}}</td>
+                  <td class="d-flex">
+                    <button type="button" class="btn btn-sm bg-secondary d-flex align-items-center" (click)="editBook(book)">
+                      <i class="fas fa-pencil-alt mr-1"></i>
+                      <p class="mb-0">Edit</p>
+                    </button>
+                    <button type="button" class="btn btn-sm bg-danger mx-2 d-flex align-items-center" (click)="delete(book)">
+                      <i class="fas fa-trash mr-1"></i>
+                      <p class="mb-0">Delete</p>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer bg-light border-top">
+            <div class="row">
+              <div class="col-sm-4 col-12 text-sm-left text-center">
+                <button class="btn btn-secondary" (click)="refresh()">
+                  <i class="fas fa-redo-alt"></i>
+                </button>
+              </div>
+              <div class="col-sm-4 col-12 text-center">
+                <p class="mb-0 my-2">
+                  {{ "TotalRecordsCount" | localize: count }}
+                </p>
+              </div>
+              <div class="col-sm-4 col-12">
+                <div class="float-sm-right m-auto">
+                  <pagination-controls (pageChange)="onChangePage($event)"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>

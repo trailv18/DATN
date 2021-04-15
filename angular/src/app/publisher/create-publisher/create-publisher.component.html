@@ -1,0 +1,115 @@
+<form
+  class="form-horizontal"
+  autocomplete="off"
+  #createPublisherForm="ngForm"
+  (ngSubmit)="save()"
+>
+  <abp-modal-header
+    [title]="'Create New Publisher' | localize"
+    (onCloseClick)="bsModalRef.hide()"
+  ></abp-modal-header>
+  <div class="modal-body">
+    <div class="form-group row required">
+      <label class="col-md-3 col-form-label" for="name">
+        {{ "Name" | localize }}
+      </label>
+      <div class="col-md-9">
+        <input
+          type="text"
+          class="form-control"
+          name="name"
+          id="name"
+          minlength="5"
+          maxlength="100"
+          required
+          [(ngModel)]="publisher.name"
+          #nameModel="ngModel"
+          #nameEl
+        />
+        <abp-validation-summary
+          [control]="nameModel"
+          [controlEl]="nameEl"
+        ></abp-validation-summary>
+      </div>
+    </div>
+
+    <div class="form-group row required">
+        <label class="col-md-3 col-form-label" for="name">
+          {{ "Email" | localize }}
+        </label>
+        <div class="col-md-9">
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            id="email"
+            minlength="5"
+            maxlength="100"
+            required
+            [(ngModel)]="publisher.email"
+            #nameModel="ngModel"
+            #nameEl
+          />
+          <abp-validation-summary
+            [control]="nameModel"
+            [controlEl]="nameEl"
+          ></abp-validation-summary>
+        </div>
+      </div>
+
+      <div class="form-group row required">
+        <label class="col-md-3 col-form-label" for="name">
+          {{ "Phone" | localize }}
+        </label>
+        <div class="col-md-9">
+          <input
+            type="text"
+            class="form-control"
+            name="phone"
+            id="phone"
+            minlength="10"
+            maxlength="10"
+            required
+            [(ngModel)]="publisher.phone"
+            #nameModel="ngModel"
+            #nameEl
+          />
+          <abp-validation-summary
+            [control]="nameModel"
+            [controlEl]="nameEl"
+          ></abp-validation-summary>
+        </div>
+      </div>
+
+      <div class="form-group row required">
+        <label class="col-md-3 col-form-label" for="name">
+          {{ "Address" | localize }}
+        </label>
+        <div class="col-md-9">
+          <input
+            type="text"
+            class="form-control"
+            name="address"
+            id="address"
+            minlength="5"
+            maxlength="150"
+            required
+            [(ngModel)]="publisher.address"
+            #nameModel="ngModel"
+            #nameEl
+          />
+          <abp-validation-summary
+            [control]="nameModel"
+            [controlEl]="nameEl"
+          ></abp-validation-summary>
+        </div>
+      </div>
+    
+  </div>
+  <abp-modal-footer
+    [cancelDisabled]="saving"
+    [saveDisabled]="!createPublisherForm.form.valid || saving"
+    (onCancelClick)="bsModalRef.hide()"
+  ></abp-modal-footer>
+</form>
+

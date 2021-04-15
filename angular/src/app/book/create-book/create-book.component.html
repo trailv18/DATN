@@ -1,0 +1,221 @@
+<form
+  class="form-horizontal"
+  autocomplete="off"
+  #createCategoryForm="ngForm"
+  (ngSubmit)="save()"
+>
+  <abp-modal-header
+    [title]="'Create New Book' | localize"
+    (onCloseClick)="bsModalRef.hide()"
+  ></abp-modal-header>
+  <div class="modal-body">
+      <div class="form-group row required">
+        <label class="col-md-3 col-form-label" for="name">
+          {{ "Name" | localize }}
+        </label>
+        <div class="col-md-9">
+          <input
+            type="text"
+            class="form-control"
+            name="name"
+            id="name"
+            minlength="5"
+            maxlength="100"
+            required
+            [(ngModel)]="book.name"
+            #nameModel="ngModel"
+            #nameEl
+          />
+          <abp-validation-summary
+            [control]="nameModel"
+            [controlEl]="nameEl"
+          ></abp-validation-summary>
+        </div>
+      </div>
+
+      <div class="form-group row required">
+          <label class="col-md-3 col-form-label" for="priceBorrow">
+            {{ "Price Borrow" | localize }}
+          </label>
+          <div class="col-md-9">
+            <input
+              type="text"
+              class="form-control"
+              name="priceBorrow"
+              id="priceBorrow"
+              maxlength="100"
+              required
+              [(ngModel)]="book.priceBorrow"
+              #nameModel="ngModel"
+              #nameEl
+            />
+            <abp-validation-summary
+              [control]="nameModel"
+              [controlEl]="nameEl"
+            ></abp-validation-summary>
+          </div>
+        </div>
+
+        <div class="form-group row required">
+          <label class="col-md-3 col-form-label" for="stock">
+            {{ "Stock" | localize }}
+          </label>
+          <div class="col-md-9">
+            <input
+              type="number"
+              class="form-control"
+              name="stock"
+              id="stock"
+              minlength="4"
+              maxlength="4"
+              required
+              [(ngModel)]="book.stock"
+              #nameModel="ngModel"
+              #nameEl
+            />
+            <abp-validation-summary
+              [control]="nameModel"
+              [controlEl]="nameEl"
+            ></abp-validation-summary>
+          </div>
+        </div>
+
+          <div class="form-group row required">
+            <label class="col-md-3 col-form-label" for="categoryId">
+              {{ "Category" | localize }}
+            </label>
+            <div class="col-md-9">
+                <select class="form-control" 
+                    name="categoryId" 
+                    required
+                    [(ngModel)]="book.categoryId" 
+                    #nameModel="ngModel" 
+                    #nameEl
+                  >
+                  <option value="book.categoryId" *ngFor=" let category of categories"
+                      [value]="category.id">
+                      {{category.name}}
+                  </option>
+                </select>
+              <abp-validation-summary [control]="nameModel" [controlEl]="nameEl">
+              </abp-validation-summary>
+            </div>
+        </div>
+
+        <div class="form-group row required">
+          <label class="col-md-3 col-form-label" for="authorId">
+            {{ "Author" | localize }}
+          </label>
+          <div class="col-md-9">
+              <select class="form-control" 
+                  name="authorId" 
+                  required
+                  [(ngModel)]="book.authorId" 
+                  #nameModel="ngModel" 
+                  #nameEl
+                >
+                <option value="book.authorId" *ngFor=" let author of authors"
+                    [value]="author.id">
+                    {{author.name}}
+                </option>
+              </select>
+            <abp-validation-summary [control]="nameModel" [controlEl]="nameEl"></abp-validation-summary>
+          </div>
+      </div>
+
+      <div class="form-group row required">
+        <label class="col-md-3 col-form-label" for="publisherId">
+          {{ "Publisher" | localize }}
+        </label>
+        <div class="col-md-9">
+            <select class="form-control" 
+                name="publisherId" 
+                minlength=5
+                maxlength=100
+                required
+                [(ngModel)]="book.publisherId" 
+                #nameModel="ngModel" 
+                #nameEl
+              >
+              <option value="book.publisherId" *ngFor=" let publisher of publishers"
+                  [value]="publisher.id">
+                  {{publisher.name}}
+              </option>
+            </select>
+          <abp-validation-summary [control]="nameModel" [controlEl]="nameEl"></abp-validation-summary>
+        </div>
+    </div>
+
+    <div class="form-group row required">
+      <label class="col-md-3 col-form-label" for="description">
+        {{ "Description" | localize }}
+      </label>
+      <div class="col-md-9">
+        <input
+          type="text"
+          class="form-control"
+          name="description"
+          id="description"
+          required
+          [(ngModel)]="book.description"
+          #nameModel="ngModel"
+          #nameEl
+        />
+        <abp-validation-summary
+          [control]="nameModel"
+          [controlEl]="nameEl"
+        ></abp-validation-summary>
+      </div>
+  </div>
+
+      <div class="form-group row required">
+        <label class="col-md-3 col-form-label" for="urlImage">
+          {{ "Image" | localize }}
+        </label>
+        <div class="col-md-9">
+          <input
+            type="file"
+            class="form-control"
+            name="urlImage"
+            id="urlImage"
+            minlength="5"
+            maxlength="100"
+            (change)="onFileSelected($event)"
+          />
+        </div>
+      </div>
+
+      <div class="form-group row required">
+        <label class="col-md-3 col-form-label" for="year">
+          {{ "Year" | localize }}
+        </label>
+        <div class="col-md-9">
+          <input
+            type="text"
+            class="form-control"
+            name="year"
+            id="year"
+            minlength="4"
+            maxlength="4"
+            required
+            [(ngModel)]="book.year"
+            #nameModel="ngModel"
+            #nameEl
+          />
+          <abp-validation-summary
+            [control]="nameModel"
+            [controlEl]="nameEl"
+          ></abp-validation-summary>
+        </div>
+      </div>
+    
+    
+  </div>
+  <abp-modal-footer
+    [cancelDisabled]="saving"
+    [saveDisabled]="!createCategoryForm.form.valid || saving"
+    (onCancelClick)="bsModalRef.hide()"
+  ></abp-modal-footer>
+</form>
+
+   
