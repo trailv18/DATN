@@ -59,6 +59,7 @@ import { EditBookComponent } from './book/edit-book/edit-book.component';
 import { CreateBookComponent } from './book/create-book/create-book.component';
 import { EditPublisherComponent } from './publisher/edit-publisher/edit-publisher.component';
 import { CreatePublisherComponent } from './publisher/create-publisher/create-publisher.component';
+import { BorrowMComponent } from './borrow-m/borrow-m.component';
 
 @NgModule({
   declarations: [
@@ -106,6 +107,7 @@ import { CreatePublisherComponent } from './publisher/create-publisher/create-pu
     ReaderBorrowDetailComponent,
     EditBookComponent,
     CreateBookComponent,
+    BorrowMComponent,
   ],
   imports: [
     CommonModule,

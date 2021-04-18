@@ -1,5 +1,6 @@
 ﻿using Abp.Authorization;
 using Abp.Domain.Repositories;
+using Abp.Linq.Extensions;
 using Abp.UI;
 using FluentValidation.Results;
 using LibraryManagementProject.AppService.BorrowBooks.Dto;
@@ -32,7 +33,7 @@ namespace LibraryManagementProject.AppService.BorrowBooks
         }
 
         [HttpGet]
-        public async Task<PageResult<GetAllBorrowBookDto>> GetPageBorrowBook(int? page)
+        public async Task<PageResult<GetAllBorrowBookDto>> GetPageBorrowBook(int? page, DateTime? fromDate, DateTime? toDate, int? month)
         {
             int pageSize = 9;
             var result = new PageResult<GetAllBorrowBookDto>
@@ -40,7 +41,10 @@ namespace LibraryManagementProject.AppService.BorrowBooks
                 Count = _borrowBookRepository.GetAll().Count(),
                 PageIndex = page ?? 1,
                 PageSize = 9,
-                Items = await _borrowBookRepository.GetAll().Select(value => new GetAllBorrowBookDto
+                Items = await _borrowBookRepository
+                .GetAll()
+                .WhereIf(fromDate.HasValue && toDate.HasValue || month != null, x => x.DateBorrow.Date >= fromDate && x.DateRepay.Date <= toDate || x.DateBorrow.Month == month)
+                .Select(value => new GetAllBorrowBookDto
                 {
                     Id = value.Id,
                     DateBorrow = value.DateBorrow,

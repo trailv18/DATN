@@ -18,10 +18,10 @@
                         <td>
                             <div class="row">
                                 <div class="col-lg-5 Product-img">
-                                    <img [src]="sanitizer.bypassSecurityTrustUrl(book.urlImage)" alt="..." class="img-responsive"/>
+                                    <img [src]="book.urlImage" alt="..." class="img-responsive"/>
                                 </div>
-                                <div class="col-lg-10">
-                                    <h4 class="nomargin">{{book.bookName}}</h4>
+                                <div class="col-lg-10 py-1">
+                                    <h6 class="nomargin">{{book.bookName}}</h6>
                                 </div>
                             </div>
                         </td>

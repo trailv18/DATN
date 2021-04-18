@@ -834,12 +834,21 @@ export class BorrowBookServiceProxy {
 
     /**
      * @param page (optional) 
+     * @param fromDate (optional) 
+     * @param toDate (optional) 
+     * @param month (optional) 
      * @return Success
      */
-    getPageBorrowBook(page: number | null | undefined): Observable<GetAllBorrowBookDtoPageResult> {
+    getPageBorrowBook(page: number | null | undefined, fromDate: moment.Moment | null | undefined, toDate: moment.Moment | null | undefined, month: number | null | undefined): Observable<GetAllBorrowBookDtoPageResult> {
         let url_ = this.baseUrl + "/api/services/app/BorrowBook/GetPageBorrowBook?";
         if (page !== undefined && page !== null)
             url_ += "page=" + encodeURIComponent("" + page) + "&";
+        if (fromDate !== undefined && fromDate !== null)
+            url_ += "fromDate=" + encodeURIComponent(fromDate ? "" + fromDate.toJSON() : "") + "&";
+        if (toDate !== undefined && toDate !== null)
+            url_ += "toDate=" + encodeURIComponent(toDate ? "" + toDate.toJSON() : "") + "&";
+        if (month !== undefined && month !== null)
+            url_ += "month=" + encodeURIComponent("" + month) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {

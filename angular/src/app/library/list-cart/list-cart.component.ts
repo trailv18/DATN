@@ -1,7 +1,4 @@
-import { stringify } from '@angular/compiler/src/util';
 import { Component, EventEmitter, Injector, OnInit, Output } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { AppComponentBase } from '@shared/app-component-base';
 import {
@@ -27,13 +24,12 @@ export class ListCartComponent extends AppComponentBase implements OnInit {
   @Output() onSave = new EventEmitter<any>();
 
   total: number = 0;
-  mess: string="";
+  mess: string = "";
 
   constructor(
     injector: Injector,
     public _borrowBookDetaiService: BorrowBookDetaiServiceProxy,
     private _modalService: BsModalService,
-    public sanitizer: DomSanitizer,
   ) {
     super(injector);
   }
@@ -42,7 +38,7 @@ export class ListCartComponent extends AppComponentBase implements OnInit {
     this.listAdded();
   }
 
-  listAdded() {   
+  listAdded() {
     this.cart = JSON.parse(localStorage.getItem('object'));
     this.tinhtong();
   }
@@ -50,25 +46,25 @@ export class ListCartComponent extends AppComponentBase implements OnInit {
   tinhtong() {
     this.total = 0;
     this.cart = JSON.parse(localStorage.getItem('object'));
-    if(!this.cart){
+    if (!this.cart) {
       this.mess = "This cart is empty!";
     }
-    else{
-      for(let i = 0; i< this.cart.length; i++){
-        this.total +=  (this.cart[i].qty * this.cart[i].priceBorrow);
+    else {
+      for (let i = 0; i < this.cart.length; i++) {
+        this.total += (this.cart[i].qty * this.cart[i].priceBorrow);
       }
-      localStorage.setItem('total', String(this.total)); 
-    }   
+      localStorage.setItem('total', String(this.total));
+    }
   }
 
-  update(item: string,qty:number){
+  update(item: string, qty: number) {
     this.cart = JSON.parse(localStorage.getItem('object'));
     for (let i = 0; i < this.cart.length; i++) {
-      if (this.cart[i].bookId == item){  
-      this.cart[i].qty = qty;
+      if (this.cart[i].bookId == item) {
+        this.cart[i].qty = qty;
       }
     }
-    localStorage.setItem("object",JSON.stringify(this.cart));
+    localStorage.setItem("object", JSON.stringify(this.cart));
     this.tinhtong();
   }
 
@@ -85,7 +81,7 @@ export class ListCartComponent extends AppComponentBase implements OnInit {
 
   save() {
     this.saving = true;
-    this.cart = JSON.parse(localStorage.getItem('object'))    
+    this.cart = JSON.parse(localStorage.getItem('object'))
     this._borrowBookDetaiService
       .addBorrowBookDetail(this.cart)
       .pipe(
@@ -96,7 +92,7 @@ export class ListCartComponent extends AppComponentBase implements OnInit {
       )
       .subscribe(() => {
         this.notify.info(this.l('Successfully'));
+        localStorage.removeItem('object');
       });
-    localStorage.removeItem('object');
   }
 }
