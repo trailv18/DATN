@@ -16,6 +16,7 @@ import { HomeComponent } from '@app/home/home.component';
 import { AboutComponent } from '@app/about/about.component';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireStorageModule} from "@angular/fire/storage";
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 // tenants
 import { TenantsComponent } from '@app/tenants/tenants.component';
 import { CreateTenantDialogComponent } from './tenants/create-tenant/create-tenant-dialog.component';
@@ -60,6 +61,9 @@ import { CreateBookComponent } from './book/create-book/create-book.component';
 import { EditPublisherComponent } from './publisher/edit-publisher/edit-publisher.component';
 import { CreatePublisherComponent } from './publisher/create-publisher/create-publisher.component';
 import { BorrowMComponent } from './borrow-m/borrow-m.component';
+import { BorrowDetailComponent } from './borrow-m/borrow-detail/borrow-detail.component';
+import { UpdateStatusComponent } from './borrow-m/borrow-detail/update-status/update-status.component';
+import { StatisticReportComponent } from './statistic-report/statistic-report.component';
 
 @NgModule({
   declarations: [
@@ -108,6 +112,9 @@ import { BorrowMComponent } from './borrow-m/borrow-m.component';
     EditBookComponent,
     CreateBookComponent,
     BorrowMComponent,
+    BorrowDetailComponent,
+    UpdateStatusComponent,
+    StatisticReportComponent,
   ],
   imports: [
     CommonModule,
@@ -125,6 +132,7 @@ import { BorrowMComponent } from './borrow-m/borrow-m.component';
     NgxPaginationModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireStorageModule,
+    BsDatepickerModule.forRoot(),
   ],
   providers: [],
   entryComponents: [

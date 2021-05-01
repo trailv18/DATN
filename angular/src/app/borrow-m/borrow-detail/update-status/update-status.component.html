@@ -1,0 +1,47 @@
+<form
+  class="form-horizontal"
+  autocomplete="off"
+  #editBorrowForm="ngForm"
+  (ngSubmit)="save()"
+>
+  <abp-modal-header
+    [title]="'Update status' | localize"
+    (onCloseClick)="bsModalRef.hide()"
+  ></abp-modal-header>
+  
+  <div class="modal-body">
+
+    <div class="form-group row required">
+        <label class="col-md-3 col-form-label" for="name">
+          {{ "Status" | localize }}
+        </label>
+        <div class="col-md-9">
+            <select class="form-control" 
+                name="status" 
+                id="selectfrorm" 
+                [id]="borrowBook.status"
+                minlength=5
+                maxlength=100
+                required
+                [(ngModel)]="borrowBook.status" 
+                #nameModel="ngModel" 
+                #nameEl
+              >
+              <option value="product.productId" 
+                  *ngFor=" let st of status"
+                  [value]="st.name">
+                  {{st.name}}
+              </option>
+            </select>
+          <abp-validation-summary [control]="nameModel" [controlEl]="nameEl"></abp-validation-summary>
+        </div>
+    </div>
+    
+  </div>
+  
+  <abp-modal-footer
+    [cancelDisabled]="saving"
+    [saveDisabled]="!editBorrowForm.form.valid || saving"
+    (onCancelClick)="bsModalRef.hide()"
+  ></abp-modal-footer>
+</form>

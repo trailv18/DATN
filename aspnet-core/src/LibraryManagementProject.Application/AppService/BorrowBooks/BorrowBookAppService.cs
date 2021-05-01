@@ -36,12 +36,9 @@ namespace LibraryManagementProject.AppService.BorrowBooks
         public async Task<PageResult<GetAllBorrowBookDto>> GetPageBorrowBook(int? page, DateTime? fromDate, DateTime? toDate, int? month)
         {
             int pageSize = 9;
-            var result = new PageResult<GetAllBorrowBookDto>
-            {
-                Count = _borrowBookRepository.GetAll().Count(),
-                PageIndex = page ?? 1,
-                PageSize = 9,
-                Items = await _borrowBookRepository
+            var count = 0;
+
+            var results = _borrowBookRepository
                 .GetAll()
                 .WhereIf(fromDate.HasValue && toDate.HasValue || month != null, x => x.DateBorrow.Date >= fromDate && x.DateRepay.Date <= toDate || x.DateBorrow.Month == month)
                 .Select(value => new GetAllBorrowBookDto
@@ -52,8 +49,16 @@ namespace LibraryManagementProject.AppService.BorrowBooks
                     Status = value.Status,
                     Total = value.Total,
                     User = value.User.FullName
-                })
-                .Skip(((page - 1 ?? 0) * pageSize)).Take(pageSize).ToListAsync()
+                });
+
+            count = results.Count();
+
+            var result = new PageResult<GetAllBorrowBookDto>
+            {
+                Count = count,
+                PageIndex = page ?? 1,
+                PageSize = 9,
+                Items = await results.Skip(((page - 1 ?? 0) * pageSize)).Take(pageSize).ToListAsync()
             };
 
             return result;
@@ -126,26 +131,29 @@ namespace LibraryManagementProject.AppService.BorrowBooks
         public async Task<PageResult<GetAllBorrowBookDto>> GetBorrowBookPageByUserId(int? page)
         {
             long userID = AbpSession.UserId.Value;
+            var count = 0;
+            var results = _borrowBookRepository
+                   .GetAll()
+                   .Where(user => user.UserId == userID)
+                   .Select(value => new GetAllBorrowBookDto
+                   {
+                       Id = value.Id,
+                       DateBorrow = value.DateBorrow,
+                       DateRepay = value.DateRepay,
+                       Status = value.Status,
+                       Total = value.Total,
+                       User = value.User.FullName
+                   });
+
+            count = results.Count();
 
             int pageSize = 9;
             var result = new PageResult<GetAllBorrowBookDto>
             {
-                Count = _borrowBookRepository.GetAll().Where(x => x.UserId == userID).Count(),
+                Count = count,
                 PageIndex = page ?? 1,
                 PageSize = 9,
-                Items = await _borrowBookRepository
-                    .GetAll()
-                    .Where(user => user.UserId == userID)
-                    .Select(value => new GetAllBorrowBookDto
-                    {
-                        Id = value.Id,
-                        DateBorrow = value.DateBorrow,
-                        DateRepay = value.DateRepay,
-                        Status = value.Status,
-                        Total = value.Total,
-                        User = value.User.FullName
-                    })
-                .Skip(((page - 1 ?? 0) * pageSize)).Take(pageSize).ToListAsync()
+                Items = await results.Skip(((page - 1 ?? 0) * pageSize)).Take(pageSize).ToListAsync()
             };
 
             return result;

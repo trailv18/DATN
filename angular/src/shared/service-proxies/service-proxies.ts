@@ -2628,6 +2628,84 @@ export class SessionServiceProxy {
 }
 
 @Injectable()
+export class StatisticReportServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param page (optional) 
+     * @param fromDate (optional) 
+     * @param toDate (optional) 
+     * @param month (optional) 
+     * @param quarter (optional) 
+     * @return Success
+     */
+    getStatisticByCriteria(page: number | null | undefined, fromDate: moment.Moment | null | undefined, toDate: moment.Moment | null | undefined, month: number | null | undefined, quarter: number | null | undefined): Observable<StatisticReportDtoPageResult> {
+        let url_ = this.baseUrl + "/api/services/app/StatisticReport/GetStatisticByCriteria?";
+        if (page !== undefined && page !== null)
+            url_ += "page=" + encodeURIComponent("" + page) + "&";
+        if (fromDate !== undefined && fromDate !== null)
+            url_ += "fromDate=" + encodeURIComponent(fromDate ? "" + fromDate.toJSON() : "") + "&";
+        if (toDate !== undefined && toDate !== null)
+            url_ += "toDate=" + encodeURIComponent(toDate ? "" + toDate.toJSON() : "") + "&";
+        if (month !== undefined && month !== null)
+            url_ += "month=" + encodeURIComponent("" + month) + "&";
+        if (quarter !== undefined && quarter !== null)
+            url_ += "quarter=" + encodeURIComponent("" + quarter) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetStatisticByCriteria(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetStatisticByCriteria(<any>response_);
+                } catch (e) {
+                    return <Observable<StatisticReportDtoPageResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<StatisticReportDtoPageResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetStatisticByCriteria(response: HttpResponseBase): Observable<StatisticReportDtoPageResult> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StatisticReportDtoPageResult.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<StatisticReportDtoPageResult>(<any>null);
+    }
+}
+
+@Injectable()
 export class TenantServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -6975,6 +7053,136 @@ export interface IGetCurrentLoginInformationsOutput {
     application: ApplicationInfoDto;
     user: UserLoginInfoDto;
     tenant: TenantLoginInfoDto;
+}
+
+export class StatisticReportDto implements IStatisticReportDto {
+    bookId: string;
+    bookName: string | undefined;
+    categoryName: string | undefined;
+    dateBorrow: moment.Moment;
+    authorName: string | undefined;
+    publisherName: string | undefined;
+    quantity: number;
+
+    constructor(data?: IStatisticReportDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.bookId = _data["bookId"];
+            this.bookName = _data["bookName"];
+            this.categoryName = _data["categoryName"];
+            this.dateBorrow = _data["dateBorrow"] ? moment(_data["dateBorrow"].toString()) : <any>undefined;
+            this.authorName = _data["authorName"];
+            this.publisherName = _data["publisherName"];
+            this.quantity = _data["quantity"];
+        }
+    }
+
+    static fromJS(data: any): StatisticReportDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StatisticReportDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["bookId"] = this.bookId;
+        data["bookName"] = this.bookName;
+        data["categoryName"] = this.categoryName;
+        data["dateBorrow"] = this.dateBorrow ? this.dateBorrow.toISOString() : <any>undefined;
+        data["authorName"] = this.authorName;
+        data["publisherName"] = this.publisherName;
+        data["quantity"] = this.quantity;
+        return data; 
+    }
+
+    clone(): StatisticReportDto {
+        const json = this.toJSON();
+        let result = new StatisticReportDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IStatisticReportDto {
+    bookId: string;
+    bookName: string | undefined;
+    categoryName: string | undefined;
+    dateBorrow: moment.Moment;
+    authorName: string | undefined;
+    publisherName: string | undefined;
+    quantity: number;
+}
+
+export class StatisticReportDtoPageResult implements IStatisticReportDtoPageResult {
+    count: number;
+    pageIndex: number;
+    pageSize: number;
+    items: StatisticReportDto[] | undefined;
+
+    constructor(data?: IStatisticReportDtoPageResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.count = _data["count"];
+            this.pageIndex = _data["pageIndex"];
+            this.pageSize = _data["pageSize"];
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(StatisticReportDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StatisticReportDtoPageResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new StatisticReportDtoPageResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["count"] = this.count;
+        data["pageIndex"] = this.pageIndex;
+        data["pageSize"] = this.pageSize;
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): StatisticReportDtoPageResult {
+        const json = this.toJSON();
+        let result = new StatisticReportDtoPageResult();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IStatisticReportDtoPageResult {
+    count: number;
+    pageIndex: number;
+    pageSize: number;
+    items: StatisticReportDto[] | undefined;
 }
 
 export class CreateTenantDto implements ICreateTenantDto {

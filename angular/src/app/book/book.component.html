@@ -41,7 +41,7 @@
                   <div class="col-sm">
                     <select class="form-control" [(ngModel)]="authorName">
                       <option value="">--Author--</option>
-                      <option  *ngFor=" let author of authors"
+                      <option *ngFor=" let author of authors"
                           [value]="author.name">
                           {{author.name}}
                       </option>

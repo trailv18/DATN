@@ -87,6 +87,12 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
         'Pages.Librarians'
       ),
       new MenuItem(
+        this.l('Statistic-Report'),
+        '/app/statistic-report',
+        'fas fa-theater-masks',
+        'Pages.Librarians'
+      ),
+      new MenuItem(
         this.l('Library'),
         '/app/library',
         'fas fa-book-open',

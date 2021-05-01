@@ -36,7 +36,7 @@ export class ReaderBorrowComponent extends AppComponentBase implements OnInit {
 
   list(): void {
     this._borrowBookService
-      .getPageBorrowBook(this.pageNumber)
+      .getBorrowBookPageByUserId(this.pageNumber)
       .subscribe(response => {
         this.borrowBooks = response.items;
         this.count = response.count;
@@ -48,15 +48,7 @@ export class ReaderBorrowComponent extends AppComponentBase implements OnInit {
 
   onChangePage(event) {
     this.pageNumber = event;
-    this._borrowBookService
-      .getPageBorrowBook(this.pageNumber)
-      .subscribe(response => {
-        this.borrowBooks = response.items;
-        this.count = response.count;
-        this.pageNumber = response.pageIndex;
-        this.pageSize = response.pageSize;
-      }
-      );
+    this.list();
   }
 }
 

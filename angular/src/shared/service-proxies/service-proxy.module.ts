@@ -20,6 +20,7 @@ import * as ApiServiceProxies from './service-proxies';
         ApiServiceProxies.LibraryServiceProxy,
         ApiServiceProxies.BorrowBookDetaiServiceProxy,
         ApiServiceProxies.BorrowBookServiceProxy,
+        ApiServiceProxies.StatisticReportServiceProxy,
         { provide: HTTP_INTERCEPTORS, useClass: AbpHttpInterceptor, multi: true }
     ]
 })

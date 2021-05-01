@@ -70,6 +70,8 @@ export class BorrowMComponent extends AppComponentBase implements OnInit {
         this.count = response.count;
         this.pageNumber = response.pageIndex;
         this.pageSize = response.pageSize;
+        console.log("ddddddd", this.borrowBooks, this.count);
+        
       });
   }
 
@@ -92,14 +94,16 @@ export class BorrowMComponent extends AppComponentBase implements OnInit {
   setup(){
     this.fromDate = undefined;
     this.toDate = undefined;
+    this.month = undefined;
     this.pageNumber = 1;
     this.pageSize = 9;
     this.list();
   }
 
   onChangePage(event) {
-    this.fromDate = undefined;
-    this.toDate = undefined;
+    // this.fromDate = undefined;
+    // this.toDate = undefined;
+    // this.month = undefined;
     this.pageNumber = event;
     this.list();
   }

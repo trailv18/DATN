@@ -18,6 +18,8 @@ import { ListCartComponent } from './library/list-cart/list-cart.component';
 import { ReaderBorrowComponent } from './reader-borrow/reader-borrow.component';
 import { ReaderBorrowDetailComponent } from './reader-borrow/reader-borrow-detail/reader-borrow-detail.component';
 import { BorrowMComponent } from './borrow-m/borrow-m.component';
+import { BorrowDetailComponent } from './borrow-m/borrow-detail/borrow-detail.component';
+import { StatisticReportComponent } from './statistic-report/statistic-report.component';
 
 @NgModule({
     imports: [
@@ -36,7 +38,9 @@ import { BorrowMComponent } from './borrow-m/borrow-m.component';
                     { path: 'authors', component: AuthorComponent,data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard] },
                     { path: 'publishers', component: PublisherComponent,data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard] },
                     { path: 'books', component: BookComponent,data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard] },
+                    { path: 'statistic-report', component: StatisticReportComponent,data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard] },
                     { path: 'borrows', component: BorrowMComponent,data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard] },
+                    { path: 'borrow-book-detail/:id', component: BorrowDetailComponent,data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard]},
                     { path: 'library', component: LibraryComponent },
                     { path: 'book-detail/:bookId', component: BookDetailComponent },
                     { path: 'cart', component: ListCartComponent },

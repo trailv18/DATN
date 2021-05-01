@@ -1,0 +1,104 @@
+<div [@routerTransition]>
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-6">
+                    <h1>Statistic and Report</h1>
+                </div>
+                <div class="col-6 text-right">
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content px-2">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="input-group">
+                        <div class="container">
+                            <div class="row">
+
+                                <div class="col-sm form-group">
+                                    <input type="text" placeholder="Choose date" class="form-control" bsDatepicker
+                                        (bsValueChange)="valueFromDate($event)">
+                                </div>
+                                <div class="col-sm form-group">
+                                    <input type="text" placeholder="Choose date" class="form-control" bsDatepicker
+                                        (bsValueChange)="valueToDate($event)">
+                                </div>
+
+                                <div class="col-sm">
+                                    <select class="form-control" [(ngModel)]="month">
+                                        <option [value]="dMonth">Choose month</option>
+                                        <option *ngFor=" let m of listMonth" [value]="m.m">
+                                            {{m.m}}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-sm">
+                                    <select class="form-control" [(ngModel)]="quarter">
+                                        <option [value]="dQuarter">Choose quarter</option>
+                                        <option *ngFor=" let qt of listQuarter" [value]="qt.q">
+                                            {{qt.q}}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-sm text-right">
+                                    <button type="button" class="btn bg-blue" (click)="filter()">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+
+                                    <button type="button" class="btn bg-secondary mx-3" (click)="setup()">
+                                        <i class="fas fa-redo-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body table-responsive p-0">
+                    <table class="table table-hover text-nowrap">
+                      <thead class="bg-light">
+                        <tr>
+                          <th>Book</th>
+                          <th>Category</th>
+                          <th>Author</th>
+                          <th>Publisher</th>
+                          <th>Quantity</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor=" let st of statistics | paginate: { itemsPerPage: pageSize, currentPage: pageIndex, totalItems:count }">
+                            <td>{{st.bookName}}</td>
+                            <td>{{ st.categoryName }}</td>
+                            <td>{{st.authorName}}</td>
+                            <td>{{st.publisherName}}</td>
+                          <td>{{ st.quantity }}</td>
+                        </tr>
+                        <!-- <th class="col"><button type="button" class="btn btn-sm bg-secondary" (click)="chart()">Chart</button></th> -->
+                      </tbody>
+                     
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- <div style="display: block;" *ngIf="pieChartLabels && pieChartData">
+        <canvas baseChart 
+          [data]="pieChartData" 
+          [labels]="pieChartLabels" 
+          [chartType]="pieChartType"
+          [options]="pieChartOptions"
+          [plugins]="pieChartPlugins"
+          [legend]="pieChartLegend"
+          [colors]="pieChartColors"
+          >
+        </canvas>
+      </div> -->
+</div>
