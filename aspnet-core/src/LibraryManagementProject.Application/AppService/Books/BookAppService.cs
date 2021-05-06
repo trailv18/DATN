@@ -47,7 +47,7 @@ namespace LibraryManagementProject.AppService.Books
         [HttpGet]
         public async Task<PageResult<GetAllBookDto>> GetPageBook(int? page, string bookName, string categoryName, string authorName, string publisherName)
         {
-            int pageSize = 9;
+            int pageSize = 3;
 
             var count = 0;
             var values = _bookRepository
@@ -75,7 +75,7 @@ namespace LibraryManagementProject.AppService.Books
             {
                 Count = count,
                 PageIndex = page ?? 1,
-                PageSize = 9,
+                PageSize = 3,
                 Items = await values.Skip(((page - 1 ?? 0) * pageSize)).Take(pageSize).ToListAsync()
             };
 
@@ -86,6 +86,7 @@ namespace LibraryManagementProject.AppService.Books
         [HttpPost]
         public async Task AddBook(BookDto input)
         {
+            List<string> errorList = new List<string>();
             var book = new Book
             {
                 Name = input.Name,
@@ -106,13 +107,12 @@ namespace LibraryManagementProject.AppService.Books
             {
                 foreach (var failure in validationResult.Errors)
                 {
-                    throw new UserFriendlyException(string.Format("{0}", failure.ErrorMessage));
+                    errorList.Add(string.Format("{0}", failure.ErrorMessage));
                 }
+                string errorString = string.Join(" ", errorList.ToArray());
+                throw new UserFriendlyException(errorString);
             }
-            else
-            {
-                await _bookRepository.InsertAsync(book);
-            }
+            await _bookRepository.InsertAsync(book);
         }
 
         [HttpGet]
@@ -125,6 +125,8 @@ namespace LibraryManagementProject.AppService.Books
         [HttpPut]
         public async Task UpdateBook(BookDto input)
         {
+            List<string> errorList = new List<string>();
+
             var data = await GetBookById(input.Id);
             data.Name = input.Name;
             data.PriceBorrow = input.PriceBorrow;
@@ -143,13 +145,12 @@ namespace LibraryManagementProject.AppService.Books
             {
                 foreach (var failure in validationResult.Errors)
                 {
-                    throw new UserFriendlyException(string.Format("{0}", failure.ErrorMessage));
+                    errorList.Add(string.Format("{0}", failure.ErrorMessage));
                 }
+                string errorString = string.Join(" ", errorList.ToArray());
+                throw new UserFriendlyException(errorString);
             }
-            else
-            {
-                await _bookRepository.UpdateAsync(data);
-            }
+            await _bookRepository.UpdateAsync(data);
         }
 
         [HttpDelete]

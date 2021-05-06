@@ -2,9 +2,9 @@ import { Component, Injector, OnInit } from '@angular/core';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { AppComponentBase } from '@shared/app-component-base';
 import { StatisticReportDto, StatisticReportServiceProxy } from '@shared/service-proxies/service-proxies';
+import { ChartOptions, ChartType } from 'chart.js';
 import * as moment from 'moment';
-import { BsModalService } from 'ngx-bootstrap/modal';
-
+import { Label, SingleDataSet } from 'ng2-charts';
 @Component({
   selector: 'app-statistic-report',
   templateUrl: './statistic-report.component.html',
@@ -40,6 +40,28 @@ export class StatisticReportComponent extends AppComponentBase implements OnInit
   valueToDate(value: Date): void {
     this.toDate = moment(value, "YYYY-MM-DD");
   }
+
+  public pieChartOptions: ChartOptions = {
+    responsive: true,
+    tooltips: {
+      enabled: true,
+      callbacks: {
+          label: function(tooltipItem, data) {
+              return data.labels[tooltipItem.index] + ': ' + data.datasets[0].data[tooltipItem.index] + '%';
+          }
+      }
+  }
+  };
+
+  pieChartLabels: Label[] = [];
+  pieChartData: SingleDataSet = [];
+  pieChartType: ChartType = 'pie';
+  pieChartLegend = true;
+  pieChartPlugins = [];
+
+  public pieChartColors: Array<any> = [{
+    backgroundColor: ['#fc5858', '#19d863', '#fdf57d', '#1b9980', '#230dc2', '#9b5913', '#ad5039'],
+  }];
 
   constructor(
     injector: Injector,
@@ -80,10 +102,24 @@ export class StatisticReportComponent extends AppComponentBase implements OnInit
     this.toDate = undefined;
     this.month = this.dMonth;
     this.quarter = this.dQuarter;
-    // this.pieChartLabels = [];
-    // this.pieChartData = [];
+    this.pieChartLabels = [];
+    this.pieChartData = [];
     this.statistics = undefined;
     this.list();
+  }
+
+  chart() {
+    let qty = 0;
+    let total = 0;
+    for (let i = 0; i < this.statistics.length; i++) {
+      total = total + this.statistics[i].quantity
+    }
+    
+    for (let i = 0; i < this.statistics.length; i++) {
+      this.pieChartLabels.push(this.statistics[i].categoryName);
+      qty = (this.statistics[i].quantity / total) * 100
+      this.pieChartData.push(Math.ceil(qty));
+    }
   }
 
 }

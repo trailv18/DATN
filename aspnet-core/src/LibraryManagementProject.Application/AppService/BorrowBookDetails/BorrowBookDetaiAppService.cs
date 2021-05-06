@@ -70,6 +70,8 @@ namespace LibraryManagementProject.AppService.BorrowBookDetails
 
             int total = 0;
             int allTotal = 0;
+
+            var items = _bookRepository.GetAll();
             //Add borrow book detail
             foreach (var borrowBookDetail in input)
             {
@@ -89,34 +91,28 @@ namespace LibraryManagementProject.AppService.BorrowBookDetails
 
                 if (!validationResult.IsValid)
                 {
-                    foreach (var error in validationResult.Errors)
+                    foreach (var failure in validationResult.Errors)
                     {
-                        errorList.Add(string.Format("{0}", error.ErrorMessage));
+                        errorList.Add(string.Format("{0}", failure.ErrorMessage));
                     }
+                    string errorString = string.Join(" ", errorList.ToArray());
+                    throw new UserFriendlyException(errorString);
+                }
+                await _borrowBookDetailRepository.InsertAsync(addBorrowBookDetail);
+
+                //Update stock
+                var data = items.Where(x => x.Id == borrowBookDetail.BookId).FirstOrDefault();
+                
+                if (borrowBookDetail.Qty > data.Stock)
+                {
+                    throw new UserFriendlyException(string.Format("{0} have {1} in stock", data.Name, data.Stock));
                 }
                 else
                 {
-                    await _borrowBookDetailRepository.InsertAsync(addBorrowBookDetail);
+                    data.Stock = data.Stock - addBorrowBookDetail.Qty;
+                    await _bookRepository.UpdateAsync(data);
                 }
 
-
-                //Update stock
-                var items = from s in _bookRepository.GetAll()
-                            where s.Id == borrowBookDetail.BookId
-                            select s;
-                foreach (var item in items)
-                {
-                    item.Stock = item.Stock - addBorrowBookDetail.Qty;
-                    await _bookRepository.UpdateAsync(item);
-                }
-
-            }
-
-            //show list error
-            if(errorList.Count != 0)
-            {
-                string errorString = string.Join(" ", errorList.ToArray());
-                throw new UserFriendlyException(errorString);
             }
 
 

@@ -49,7 +49,8 @@ namespace LibraryManagementProject.AppService.BorrowBooks
                     Status = value.Status,
                     Total = value.Total,
                     User = value.User.FullName
-                });
+                })
+                .OrderByDescending(x => x.DateBorrow);
 
             count = results.Count();
 
@@ -143,7 +144,8 @@ namespace LibraryManagementProject.AppService.BorrowBooks
                        Status = value.Status,
                        Total = value.Total,
                        User = value.User.FullName
-                   });
+                   }).OrderByDescending(x => x.DateBorrow);
+
 
             count = results.Count();
 

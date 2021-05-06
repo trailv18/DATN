@@ -7056,9 +7056,9 @@ export interface IGetCurrentLoginInformationsOutput {
 }
 
 export class StatisticReportDto implements IStatisticReportDto {
-    bookId: string;
-    bookName: string | undefined;
+    categoryId: string;
     categoryName: string | undefined;
+    bookName: string | undefined;
     dateBorrow: moment.Moment;
     authorName: string | undefined;
     publisherName: string | undefined;
@@ -7075,9 +7075,9 @@ export class StatisticReportDto implements IStatisticReportDto {
 
     init(_data?: any) {
         if (_data) {
-            this.bookId = _data["bookId"];
-            this.bookName = _data["bookName"];
+            this.categoryId = _data["categoryId"];
             this.categoryName = _data["categoryName"];
+            this.bookName = _data["bookName"];
             this.dateBorrow = _data["dateBorrow"] ? moment(_data["dateBorrow"].toString()) : <any>undefined;
             this.authorName = _data["authorName"];
             this.publisherName = _data["publisherName"];
@@ -7094,9 +7094,9 @@ export class StatisticReportDto implements IStatisticReportDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["bookId"] = this.bookId;
-        data["bookName"] = this.bookName;
+        data["categoryId"] = this.categoryId;
         data["categoryName"] = this.categoryName;
+        data["bookName"] = this.bookName;
         data["dateBorrow"] = this.dateBorrow ? this.dateBorrow.toISOString() : <any>undefined;
         data["authorName"] = this.authorName;
         data["publisherName"] = this.publisherName;
@@ -7113,9 +7113,9 @@ export class StatisticReportDto implements IStatisticReportDto {
 }
 
 export interface IStatisticReportDto {
-    bookId: string;
-    bookName: string | undefined;
+    categoryId: string;
     categoryName: string | undefined;
+    bookName: string | undefined;
     dateBorrow: moment.Moment;
     authorName: string | undefined;
     publisherName: string | undefined;

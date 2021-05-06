@@ -77,6 +77,7 @@ namespace LibraryManagementProject.AppService.Authors
         [HttpPost]
         public async Task AddAuthor(AuthorDto input)
         {
+            List<string> errorList = new List<string>();
             var author = new Author
             {
                 Name = input.Name,
@@ -92,13 +93,12 @@ namespace LibraryManagementProject.AppService.Authors
             {
                 foreach (var failure in validationResult.Errors)
                 {
-                    throw new UserFriendlyException(string.Format("{0}", failure.ErrorMessage));
+                    errorList.Add(string.Format("{0}", failure.ErrorMessage));
                 }
+                string errorString = string.Join(" ", errorList.ToArray());
+                throw new UserFriendlyException(errorString);
             }
-            else
-            {
-                await _authorRepository.InsertAsync(author);
-            }
+            await _authorRepository.InsertAsync(author);
         }
 
         [HttpGet]
@@ -111,6 +111,8 @@ namespace LibraryManagementProject.AppService.Authors
         [HttpPut]
         public async Task UpdateAuthor(AuthorDto input)
         {
+            List<string> errorList = new List<string>();
+
             var data = await GetAuthorById(input.Id);
             data.Name = input.Name;
             data.Address = input.Address;
@@ -123,13 +125,12 @@ namespace LibraryManagementProject.AppService.Authors
             {
                 foreach (var failure in validationResult.Errors)
                 {
-                    throw new UserFriendlyException(string.Format("{0}", failure.ErrorMessage));
+                    errorList.Add(string.Format("{0}", failure.ErrorMessage));
                 }
+                string errorString = string.Join(" ", errorList.ToArray());
+                throw new UserFriendlyException(errorString);
             }
-            else
-            {
-                await _authorRepository.UpdateAsync(data);
-            }
+            await _authorRepository.UpdateAsync(data);
         }
 
         //Delete

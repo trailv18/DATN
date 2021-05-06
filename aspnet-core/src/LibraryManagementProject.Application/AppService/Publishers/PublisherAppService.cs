@@ -80,6 +80,8 @@ namespace LibraryManagementProject.AppService.Publishers
         [HttpPost]
         public async Task AddPublisher(PublisherDto input)
         {
+            List<string> errorList = new List<string>();
+
             var publisher = new Publisher
             {
                 Name = input.Name,
@@ -95,13 +97,12 @@ namespace LibraryManagementProject.AppService.Publishers
             {
                 foreach (var failure in validationResult.Errors)
                 {
-                    throw new UserFriendlyException(string.Format("{0}", failure.ErrorMessage));
+                    errorList.Add(string.Format("{0}", failure.ErrorMessage));
                 }
+                string errorString = string.Join(" ", errorList.ToArray());
+                throw new UserFriendlyException(errorString);
             }
-            else
-            {
-                await _publisherRepository.InsertAsync(publisher);
-            }
+            await _publisherRepository.InsertAsync(publisher);
         }
 
         [HttpGet]
@@ -114,6 +115,8 @@ namespace LibraryManagementProject.AppService.Publishers
         [HttpPut]
         public async Task UpdatePublisher(PublisherDto input)
         {
+            List<string> errorList = new List<string>();
+
             var data = await GetPublisherById(input.Id);
             data.Name = input.Name;
             data.Email = input.Email;
@@ -127,13 +130,12 @@ namespace LibraryManagementProject.AppService.Publishers
             {
                 foreach (var failure in validationResult.Errors)
                 {
-                    throw new UserFriendlyException(string.Format("{0}", failure.ErrorMessage));
+                    errorList.Add(string.Format("{0}", failure.ErrorMessage));
                 }
+                string errorString = string.Join(" ", errorList.ToArray());
+                throw new UserFriendlyException(errorString);
             }
-            else
-            {
-                await _publisherRepository.UpdateAsync(data);
-            }
+            await _publisherRepository.UpdateAsync(data);
         }
 
         [HttpDelete]

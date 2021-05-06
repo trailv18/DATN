@@ -5,6 +5,7 @@ using LibraryManagementProject.AppService.Statistic_Report.Dto;
 using LibraryManagementProject.Entity.Books;
 using LibraryManagementProject.Entity.BorrowBookDetails;
 using LibraryManagementProject.Entity.BorrowBooks;
+using LibraryManagementProject.Entity.Categories;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -16,13 +17,16 @@ namespace LibraryManagementProject.AppService.Statistic_Report
     {
         private readonly IRepository<Book, Guid> _bookRepository;
         private readonly IRepository<BorrowBookDetail, Guid> _borrowBookDetailRepository;
+        private readonly IRepository<Category, Guid> _categoryRepository;
 
 
         public StatisticReportAppService(IRepository<Book, Guid> bookRepository,
-                                     IRepository<BorrowBookDetail, Guid> borrowBookDetailRepository)
+                                     IRepository<BorrowBookDetail, Guid> borrowBookDetailRepository,
+                                     IRepository<Category, Guid> categoryRepository)
         {
             _bookRepository = bookRepository;
             _borrowBookDetailRepository = borrowBookDetailRepository;
+            _categoryRepository = categoryRepository;
         }
 
         [HttpGet]
@@ -33,17 +37,20 @@ namespace LibraryManagementProject.AppService.Statistic_Report
             var counts = 0;
 
 
-            var data = (from borrowBook in _borrowBookDetailRepository.GetAll()
-                        join book in _bookRepository.GetAll() on borrowBook.BookId equals book.Id
+            var data = (from category in _categoryRepository.GetAll()
+                        join book in _bookRepository.GetAll() on category.Id equals book.CategoryId into TempBook
+                        from book in TempBook.DefaultIfEmpty()
+                        join borrowDetail in _borrowBookDetailRepository.GetAll() on book.Id equals borrowDetail.BookId into TempBorrow
+                        from borrowDetail in TempBorrow.DefaultIfEmpty()
                         select new
                         {
-                            BookId = borrowBook.BookId,
-                            BookName = book.Name,
-                            CategoryName = book.Category.Name,
-                            AuthorName = book.Author.Name,
-                            PublisherName = book.Publisher.Name,
-                            DateBorrow = borrowBook.BorrowBook.DateBorrow,
-                            Qty = borrowBook.Qty
+                            CategoryId = category.Id,
+                            CategoryName = category.Name,
+                            BookName = book != null ? book.Name: null,
+                            AuthorName = book != null ? book.Author.Name: null,
+                            PublisherName = book != null ? book.Publisher.Name: null,
+                            DateBorrow = borrowDetail.BorrowBook.DateBorrow,
+                            Qty = borrowDetail != null ? borrowDetail.Qty : 0
                         })
                        .ToList()
                        .WhereIf(month != null
@@ -54,14 +61,14 @@ namespace LibraryManagementProject.AppService.Statistic_Report
                             || x.DateBorrow.Date >= fromDate&& x.DateBorrow.Date <= toDate ||
                             x.DateBorrow.Month == month ||
                             ((1 <= x.DateBorrow.Month && x.DateBorrow.Month <= 3) ? 1 : ((4 <= x.DateBorrow.Month && x.DateBorrow.Month <= 6) ? 2 : ((7 <= x.DateBorrow.Month && x.DateBorrow.Month <= 9) ? 3 : ((10 <= x.DateBorrow.Month && x.DateBorrow.Month <= 12) ? 4 : 0)))) == quarter)
-                       .GroupBy(x => new { x.BookId, x.BookName, x.CategoryName, x.AuthorName, x.PublisherName })
+                       .GroupBy(x => x.CategoryId)
                        .Select(x => new StatisticReportDto
                        {
-                           BookId = x.Key.BookId,
-                           BookName = x.Key.BookName,
-                           CategoryName = x.Key.CategoryName,
-                           AuthorName = x.Key.AuthorName,
-                           PublisherName = x.Key.PublisherName,
+                           CategoryId = x.Key,
+                           BookName = x.Select(x => x.BookName).FirstOrDefault(),
+                           CategoryName = x.Select(x => x.CategoryName).FirstOrDefault(),
+                           AuthorName = x.Select(x => x.AuthorName).FirstOrDefault(),
+                           PublisherName = x.Select(x => x.PublisherName).FirstOrDefault(),
                            Quantity = x.Sum(x => x.Qty)
                        }).OrderByDescending(x => x.Quantity);
 

@@ -43,7 +43,8 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
 
   getMenuItems(): MenuItem[] {
     return [
-      new MenuItem(this.l('HomePage'), '/app/home', 'fas fa-home','Pages.Librarians'),
+      new MenuItem(this.l('Library'), '/app/home', 'fas fa-home', 'Pages.Users'),
+      new MenuItem(this.l('Dashboard'), '/app/dashboard', 'fab fa-dyalog', 'Pages.Librarians'),
       new MenuItem(
         this.l('Users'),
         '/app/users',
@@ -59,44 +60,38 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
       new MenuItem(
         this.l('Category'),
         '/app/categories',
-        'fas fa-theater-masks',
+        'fab fa-cuttlefish',
         'Pages.Librarians'
       ),
       new MenuItem(
         this.l('Author'),
         '/app/authors',
-        'fas fa-theater-masks',
+        'fab fa-autoprefixer',
         'Pages.Librarians'
       ),
       new MenuItem(
         this.l('Publisher'),
         '/app/publishers',
-        'fas fa-theater-masks',
+        'fas fa-print',
         'Pages.Librarians'
       ),
       new MenuItem(
         this.l('Book'),
         '/app/books',
-        'fas fa-theater-masks',
+        'fas fa-book',
         'Pages.Librarians'
       ),
       new MenuItem(
         this.l('Borrows'),
         '/app/borrows',
-        'fas fa-theater-masks',
+        'fas fa-clipboard-list',
         'Pages.Librarians'
       ),
       new MenuItem(
         this.l('Statistic-Report'),
         '/app/statistic-report',
-        'fas fa-theater-masks',
+        'fas fa-flag',
         'Pages.Librarians'
-      ),
-      new MenuItem(
-        this.l('Library'),
-        '/app/library',
-        'fas fa-book-open',
-        'Pages.Readers'
       ),
       new MenuItem(
         this.l('Cart'),

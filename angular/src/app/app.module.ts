@@ -17,6 +17,7 @@ import { AboutComponent } from '@app/about/about.component';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireStorageModule} from "@angular/fire/storage";
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { ChartsModule } from 'ng2-charts';
 // tenants
 import { TenantsComponent } from '@app/tenants/tenants.component';
 import { CreateTenantDialogComponent } from './tenants/create-tenant/create-tenant-dialog.component';
@@ -133,6 +134,7 @@ import { StatisticReportComponent } from './statistic-report/statistic-report.co
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireStorageModule,
     BsDatepickerModule.forRoot(),
+    ChartsModule,
   ],
   providers: [],
   entryComponents: [

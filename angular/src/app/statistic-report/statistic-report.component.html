@@ -65,22 +65,16 @@
                     <table class="table table-hover text-nowrap">
                       <thead class="bg-light">
                         <tr>
-                          <th>Book</th>
                           <th>Category</th>
-                          <th>Author</th>
-                          <th>Publisher</th>
                           <th>Quantity</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr *ngFor=" let st of statistics | paginate: { itemsPerPage: pageSize, currentPage: pageIndex, totalItems:count }">
-                            <td>{{st.bookName}}</td>
                             <td>{{ st.categoryName }}</td>
-                            <td>{{st.authorName}}</td>
-                            <td>{{st.publisherName}}</td>
                           <td>{{ st.quantity }}</td>
                         </tr>
-                        <!-- <th class="col"><button type="button" class="btn btn-sm bg-secondary" (click)="chart()">Chart</button></th> -->
+                        <th class="col"><button type="button" class="btn btn-sm bg-secondary" (click)="chart()">Chart</button></th>
                       </tbody>
                      
                     </table>
@@ -89,7 +83,7 @@
         </div>
     </section>
 
-    <!-- <div style="display: block;" *ngIf="pieChartLabels && pieChartData">
+    <div style="display: block;" *ngIf="pieChartLabels && pieChartData">
         <canvas baseChart 
           [data]="pieChartData" 
           [labels]="pieChartLabels" 
@@ -100,5 +94,5 @@
           [colors]="pieChartColors"
           >
         </canvas>
-      </div> -->
+      </div>
 </div>
