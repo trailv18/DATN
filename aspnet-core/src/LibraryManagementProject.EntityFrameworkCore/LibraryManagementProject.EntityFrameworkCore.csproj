@@ -28,4 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\LibraryManagementProject.Core\LibraryManagementProject.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
 </Project>
