@@ -1,0 +1,62 @@
+<div [@routerTransition]>
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-6">
+            <h1>Borrow Book</h1>
+          </div>
+          <div class="col-6 text-right">
+            
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <section class="content px-2">
+      <div class="container-fluid">  
+        <div class="card-body table-responsive p-0">
+          <table class="table">
+            <thead class="bg-light">
+                <tr>
+                  <th scope="col">No</th>
+                  <th scope="col">Book Name</th>
+                  <th scope="col">Date Borrow</th>
+                  <th scope="col">Date Repay</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Note</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor=" let borrowBook of borrows | paginate: { itemsPerPage: pageSize, currentPage: pageNumber, totalItems:count }; let index = index">
+                  <td>{{index + 1 + (pageNumber - 1) * pageSize}}</td>
+                  <td>{{borrowBook.bookName}}</td>
+                  <td>{{borrowBook.dateBorrow.format("YYYY/MM/DD")}}</td>
+                  <td>{{borrowBook.dateRepay.format("YYYY/MM/DD")}}</td>
+                  <td><label class="badge badge-info">{{borrowBook.status}}</label></td>
+                  <td>{{borrowBook.note}}</td>    
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer bg-light border-top">
+            <div class="row">
+              <div class="col-sm-4 col-12 text-sm-left text-center">
+                <button class="btn btn-secondary" (click)="refresh()">
+                  <i class="fas fa-redo-alt"></i>
+                </button>
+              </div>
+              <div class="col-sm-4 col-12 text-center">
+                <p class="mb-0 my-2">
+                  {{ "TotalRecordsCount" | localize: count }}
+                </p>
+              </div>
+              <div class="col-sm-4 col-12">
+                <div class="float-sm-right m-auto">
+                  <pagination-controls (pageChange)="onChangePage($event)"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </section>
+  </div>

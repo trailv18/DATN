@@ -1,17 +1,20 @@
 ﻿using Abp.Authorization;
 using Abp.Domain.Repositories;
+using Abp.Linq.Extensions;
 using Abp.UI;
 using FluentValidation.Results;
 using LibraryManagementProject.AppService.BorrowBookDetails.Dto;
+using LibraryManagementProject.AppService.Fillter;
+using LibraryManagementProject.Authorization;
 using LibraryManagementProject.Entity.Books;
 using LibraryManagementProject.Entity.BorrowBookDetails;
-using LibraryManagementProject.Entity.BorrowBooks;
 using LibraryManagementProject.Validator.BorrowBookDetails;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 
 namespace LibraryManagementProject.AppService.BorrowBookDetails
@@ -19,113 +22,191 @@ namespace LibraryManagementProject.AppService.BorrowBookDetails
     [AbpAuthorize]
     public class BorrowBookDetaiAppService : LibraryManagementProjectAppServiceBase
     {
-        private readonly IRepository<BorrowBook, Guid> _borrowBookRepository;
         private readonly IRepository<BorrowBookDetail, Guid> _borrowBookDetailRepository;
         private readonly IRepository<Book, Guid> _bookRepository;
 
-        public BorrowBookDetaiAppService(IRepository<BorrowBook, Guid> borrowBookRepository,
-                                        IRepository<BorrowBookDetail, Guid> borrowBookDetailRepository,
+        public BorrowBookDetaiAppService(IRepository<BorrowBookDetail, Guid> borrowBookDetailRepository,
                                         IRepository<Book, Guid> bookRepository)
         {
-            _borrowBookRepository = borrowBookRepository;
             _borrowBookDetailRepository = borrowBookDetailRepository;
             _bookRepository = bookRepository;
         }
 
         //Get all
         [HttpGet]
-        public async Task<List<GetAllBorrowBookDetailDto>> GetAllBorrowBookDetail()
+        public async Task<PageResult<GetAllBorrowBookDetailDto>> GetAllBorrowBookDetail(int? page, DateTime? fromDate, DateTime? toDate, int? month)
         {
-            var values = await _borrowBookDetailRepository
+            var count = 0;
+            var values = _borrowBookDetailRepository
                 .GetAll()
+                .WhereIf(fromDate.HasValue && toDate.HasValue || month != null, x => x.DateBorrow.Date >= fromDate && x.DateRepay.Date <= toDate || x.DateBorrow.Month == month)
                 .Select(result => new GetAllBorrowBookDetailDto
                 {
                     Id = result.Id,
-                    Book = result.Book.Name,
-                    Qty = result.Qty,
-                    PriceBorrow = result.PriceBorrow,
-                    Total = result.Total
-                })
-                .ToListAsync();
-            return values;
+                    BookName = result.Book.Name,
+                    DateBorrow = result.DateBorrow,
+                    DateRepay = result.DateRepay,
+                    Status = result.Status,
+                    UserName = result.User.UserName,
+                    Note = result.Note
+                }).OrderByDescending(x => x.DateBorrow);
+
+            count = values.Count();
+            int pageSize = 9;
+            var result = new PageResult<GetAllBorrowBookDetailDto>
+            {
+                Count = count,
+                PageIndex = page ?? 1,
+                PageSize = pageSize,
+                Items = await values.Skip(((page - 1 ?? 0) * pageSize)).Take(pageSize).ToListAsync()
+            };
+            return result;
         }
 
         [HttpPost]
-        public async Task AddBorrowBookDetail(List<BorrowBookDetailDto> input)
+        public async Task AddBorrowBookDetail(BorrowBookDetailDto input)
         {
-            if(input.Count == 0)
-            {
-                throw new UserFriendlyException("Please choose the book!");
-            }
-
             List<string> errorList = new List<string>();
 
-            DateTime today = DateTime.Now;
-            //Add id BorrowBook
-            var borrowBook = new BorrowBook
+            var userId = AbpSession.UserId.Value;
+            var bookItems = _bookRepository.GetAll();
+            var borrows = _borrowBookDetailRepository.GetAll();
+
+            foreach (var borrow in borrows)
             {
-                DateBorrow = today
-            };
-            await _borrowBookRepository.InsertAsync(borrowBook);
-
-            int total = 0;
-            int allTotal = 0;
-
-            var items = _bookRepository.GetAll();
-            //Add borrow book detail
-            foreach (var borrowBookDetail in input)
-            {
-                var addBorrowBookDetail = new BorrowBookDetail
+                if (borrow.BookId == input.BookId && borrow.UserId == userId && borrow.Status != "Đã trả")
                 {
-                    Qty = borrowBookDetail.Qty,
-                    BookId = borrowBookDetail.BookId,
-                    PriceBorrow = borrowBookDetail.PriceBorrow,
-                    Total = borrowBookDetail.Qty * borrowBookDetail.PriceBorrow,
-                    BorrowBookId = borrowBook.Id
-                };
-
-                allTotal = allTotal + (borrowBookDetail.Qty * borrowBookDetail.PriceBorrow);
-
-                BorrowBookDetailValiadtor validator = new BorrowBookDetailValiadtor();
-                ValidationResult validationResult = validator.Validate(addBorrowBookDetail);
-
-                if (!validationResult.IsValid)
-                {
-                    foreach (var failure in validationResult.Errors)
-                    {
-                        errorList.Add(string.Format("{0}", failure.ErrorMessage));
-                    }
-                    string errorString = string.Join(" ", errorList.ToArray());
-                    throw new UserFriendlyException(errorString);
+                    throw new UserFriendlyException("Bạn đang mượn sách này!");
                 }
-                await _borrowBookDetailRepository.InsertAsync(addBorrowBookDetail);
-
-                //Update stock
-                var data = items.Where(x => x.Id == borrowBookDetail.BookId).FirstOrDefault();
-                
-                if (borrowBookDetail.Qty > data.Stock)
-                {
-                    throw new UserFriendlyException(string.Format("{0} have {1} in stock", data.Name, data.Stock));
-                }
-                else
-                {
-                    data.Stock = data.Stock - addBorrowBookDetail.Qty;
-                    await _bookRepository.UpdateAsync(data);
-                }
-
             }
 
-
-            //Update BorrowBook
+            DateTime today = DateTime.Now;
             TimeSpan aInterval = new System.TimeSpan(5, 0, 0, 0);
-
             DateTime newTime = today.Add(aInterval);
 
-            borrowBook.Total = allTotal;
-            borrowBook.Status = "Đang xử lý";
-            borrowBook.DateRepay = newTime;
-            borrowBook.UserId = AbpSession.UserId.Value;
-            await _borrowBookRepository.InsertAsync(borrowBook);
+            var addBorrowBookDetail = new BorrowBookDetail
+            {
+                BookId = input.BookId,
+                Qty = 1,
+                DateBorrow = today,
+                DateRepay = newTime,
+                Status = "Đang xử lý",
+                UserId = userId,
+                Note = "Không"
+            };
+
+
+            BorrowBookDetailValiadtor validator = new BorrowBookDetailValiadtor();
+            ValidationResult validationResult = validator.Validate(addBorrowBookDetail);
+
+            if (!validationResult.IsValid)
+            {
+                foreach (var failure in validationResult.Errors)
+                {
+                    errorList.Add(string.Format("{0}", failure.ErrorMessage));
+                }
+                string errorString = string.Join(" ", errorList.ToArray());
+                throw new UserFriendlyException(errorString);
+            }
+
+            //Update stock
+            var data = bookItems.Where(x => x.Id == input.BookId).FirstOrDefault();
+
+            if (data.Stock < 1)
+            {
+                throw new UserFriendlyException(string.Format("{0} have {1} in stock", data.Name, data.Stock));
+            }
+            else
+            {
+                data.Stock = data.Stock - 1;
+                await _bookRepository.UpdateAsync(data);
+            }
+
+            //add
+            await _borrowBookDetailRepository.InsertAsync(addBorrowBookDetail);
+
         }
+
+        [HttpGet]
+        public async Task<BorrowBookDetail> GetById(Guid id)
+        {
+            return await _borrowBookDetailRepository.GetAsync(id);
+        }
+
+        //Update status
+        [AbpAuthorize(PermissionNames.Pages_Librarians)]
+        [HttpPut]
+        public async Task UpdateStatus(UpdateStatusDto input)
+        {
+            var data = await GetById(input.Id);
+            data.Status = input.Status;
+            data.Note = input.Note;
+
+            var book = _bookRepository.GetAll().Where(x => x.Id == input.BookId).FirstOrDefault();
+
+            BorrowBookDetailValiadtor validator = new BorrowBookDetailValiadtor();
+            ValidationResult validationResult = validator.Validate(data);
+
+            if (!validationResult.IsValid)
+            {
+                foreach (var failure in validationResult.Errors)
+                {
+                    throw new UserFriendlyException(string.Format("{0}", failure.ErrorMessage));
+                }
+            }
+            else
+            {
+                if (input.Status == "Đã trả")
+                {
+                    book.Stock = book.Stock + 1;
+                    await _bookRepository.UpdateAsync(book);
+                    await _borrowBookDetailRepository.UpdateAsync(data);
+                }
+            }
+        }
+
+        //get borrow book of user
+        [HttpGet]
+        public async Task<PageResult<GetAllBorrowBookDetailDto>> GetBorrowBookPageByUserId(int? page)
+        {
+            long userID = AbpSession.UserId.Value;
+            var count = 0;
+            var results = _borrowBookDetailRepository
+                   .GetAll()
+                   .Where(user => user.UserId == userID)
+                   .Select(value => new GetAllBorrowBookDetailDto
+                   {
+                       Id = value.Id,
+                       BookName = value.Book.Name,
+                       DateBorrow = value.DateBorrow,
+                       DateRepay = value.DateRepay,
+                       Status = value.Status,
+                       Note = value.Note
+                   }).OrderByDescending(x => x.DateBorrow);
+
+
+            count = results.Count();
+
+            int pageSize = 9;
+            var result = new PageResult<GetAllBorrowBookDetailDto>
+            {
+                Count = count,
+                PageIndex = page ?? 1,
+                PageSize = 9,
+                Items = await results.Skip(((page - 1 ?? 0) * pageSize)).Take(pageSize).ToListAsync()
+            };
+
+            return result;
+        }
+
+        //Delete
+        [HttpDelete]
+        public async Task Delete(DeleteDto input)
+        {
+            var data = await GetById(input.Id);
+
+            await _borrowBookDetailRepository.DeleteAsync(data);
+        }
+
     }
 }

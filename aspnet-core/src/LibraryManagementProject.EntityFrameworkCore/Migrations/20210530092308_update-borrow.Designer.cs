@@ -3,14 +3,16 @@ using System;
 using LibraryManagementProject.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LibraryManagementProject.Migrations
 {
     [DbContext(typeof(LibraryManagementProjectDbContext))]
-    partial class LibraryManagementProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210530092308_update-borrow")]
+    partial class updateborrow
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -11,11 +11,11 @@ namespace LibraryManagementProject.Validator.BorrowBookDetails
         public BorrowBookDetailValiadtor()
         {
             RuleFor(value => value.Id).NotNull();
-            RuleFor(value => value.BorrowBookId).NotEmpty();
-            RuleFor(value => value.BookId).NotNull().NotEmpty();
-            RuleFor(value => value.Qty).NotNull().LessThan(5);
-            RuleFor(value => value.PriceBorrow).NotEmpty();
-            RuleFor(value => value.Total).NotNull();
+            RuleFor(value => value.BookId).NotNull();
+            RuleFor(value => value.DateBorrow).NotNull();
+            RuleFor(value => value.Qty).NotNull();
+            RuleFor(value => value.DateRepay).NotNull();
+            RuleFor(value => value.UserId).NotEmpty();
         }
     }
 }

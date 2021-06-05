@@ -42,12 +42,14 @@
             <table class="table table-hover text-nowrap">
               <thead class="bg-light">
                 <tr>
+                  <th>No</th>
                   <th>Category</th>
                   <th style="width: 200px;">Action</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor=" let category of categories | paginate: { itemsPerPage: pageSize, currentPage: pageNumber, totalItems:count }">
+                <tr *ngFor=" let category of categories | paginate: { itemsPerPage: pageSize, currentPage: pageNumber, totalItems:count }; let index = index">
+                  <td>{{index + 1 + (pageNumber - 1) * pageSize}}</td>
                   <td>{{ category.name }}</td>
                   <td>
                     <button type="button" class="btn btn-sm bg-secondary" (click)="editCategory(category)">

@@ -18,6 +18,8 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireStorageModule} from "@angular/fire/storage";
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { ChartsModule } from 'ng2-charts';
+import {MatTabsModule} from '@angular/material/tabs';
+
 // tenants
 import { TenantsComponent } from '@app/tenants/tenants.component';
 import { CreateTenantDialogComponent } from './tenants/create-tenant/create-tenant-dialog.component';
@@ -53,17 +55,14 @@ import { EditCategoryComponent } from './category/edit-category/edit-category.co
 import { PublisherComponent } from './publisher/publisher.component';
 import { LibraryComponent } from './library/library.component';
 import { BookDetailComponent } from './library/book-detail/book-detail.component';
-import { ListCartComponent } from './library/list-cart/list-cart.component';
-import { ReaderBorrowComponent } from './reader-borrow/reader-borrow.component';
-import { ReaderBorrowDetailComponent } from './reader-borrow/reader-borrow-detail/reader-borrow-detail.component';
 import { environment } from 'environments/environment';
 import { EditBookComponent } from './book/edit-book/edit-book.component';
 import { CreateBookComponent } from './book/create-book/create-book.component';
 import { EditPublisherComponent } from './publisher/edit-publisher/edit-publisher.component';
 import { CreatePublisherComponent } from './publisher/create-publisher/create-publisher.component';
-import { BorrowMComponent } from './borrow-m/borrow-m.component';
-import { BorrowDetailComponent } from './borrow-m/borrow-detail/borrow-detail.component';
-import { UpdateStatusComponent } from './borrow-m/borrow-detail/update-status/update-status.component';
+import { BorrowbookComponent } from './borrowbook/borrowbook.component';
+import { UpdateStatusComponent } from './borrowbook/update-status/update-status.component';
+import { BorrowbookReaderComponent } from './borrowbook-reader/borrowbook-reader.component';
 import { StatisticReportComponent } from './statistic-report/statistic-report.component';
 
 @NgModule({
@@ -107,14 +106,11 @@ import { StatisticReportComponent } from './statistic-report/statistic-report.co
     CreatePublisherComponent,
     LibraryComponent,
     BookDetailComponent,
-    ListCartComponent,
-    ReaderBorrowComponent,
-    ReaderBorrowDetailComponent,
     EditBookComponent,
     CreateBookComponent,
-    BorrowMComponent,
-    BorrowDetailComponent,
+    BorrowbookComponent,
     UpdateStatusComponent,
+    BorrowbookReaderComponent,
     StatisticReportComponent,
   ],
   imports: [
@@ -135,6 +131,7 @@ import { StatisticReportComponent } from './statistic-report/statistic-report.co
     AngularFireStorageModule,
     BsDatepickerModule.forRoot(),
     ChartsModule,
+    MatTabsModule
   ],
   providers: [],
   entryComponents: [

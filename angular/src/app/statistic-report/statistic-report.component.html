@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-6">
-                    <h1>Statistic and Report</h1>
+                    <h1 style="margin-left: 100px;">Statistic and Report</h1>
                 </div>
                 <div class="col-6 text-right">
 
@@ -12,87 +12,177 @@
         </div>
     </section>
 
-    <section class="content px-2">
-        <div class="container-fluid">
-            <div class="card">
-                <div class="card-header">
-                    <div class="input-group">
-                        <div class="container">
-                            <div class="row">
+    <div class="tabset">
+        <!-- Tab 1 -->
+        <input type="radio" name="tabset" id="tab1" aria-controls="marzen" checked>
+        <label for="tab1">Statistics by Category</label>
+        <!-- Tab 2 -->
+        <input type="radio" name="tabset" id="tab2" aria-controls="rauchbier">
+        <label for="tab2">Statistics borrow</label>
 
-                                <div class="col-sm form-group">
-                                    <input type="text" placeholder="Choose date" class="form-control" bsDatepicker
-                                        (bsValueChange)="valueFromDate($event)">
-                                </div>
-                                <div class="col-sm form-group">
-                                    <input type="text" placeholder="Choose date" class="form-control" bsDatepicker
-                                        (bsValueChange)="valueToDate($event)">
-                                </div>
+        <div class="tab-panels">
+            <!--tab1-->
+            <section id="marzen" class="tab-panel">
+                <section class="content px-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="input-group">
+                                <div class="container">
+                                    <div class="row">
 
-                                <div class="col-sm">
-                                    <select class="form-control" [(ngModel)]="month">
-                                        <option [value]="dMonth">Choose month</option>
-                                        <option *ngFor=" let m of listMonth" [value]="m.m">
-                                            {{m.m}}
-                                        </option>
-                                    </select>
-                                </div>
+                                        <div class="col-sm form-group">
+                                            <input type="text" placeholder="Choose date" class="form-control"
+                                                bsDatepicker (bsValueChange)="valueFromDate($event)">
+                                        </div>
+                                        <div class="col-sm form-group">
+                                            <input type="text" placeholder="Choose date" class="form-control"
+                                                bsDatepicker (bsValueChange)="valueToDate($event)">
+                                        </div>
 
-                                <div class="col-sm">
-                                    <select class="form-control" [(ngModel)]="quarter">
-                                        <option [value]="dQuarter">Choose quarter</option>
-                                        <option *ngFor=" let qt of listQuarter" [value]="qt.q">
-                                            {{qt.q}}
-                                        </option>
-                                    </select>
-                                </div>
+                                        <div class="col-sm">
+                                            <select class="form-control" [(ngModel)]="month">
+                                                <option [value]="dMonth">Choose month</option>
+                                                <option *ngFor=" let m of listMonth" [value]="m.m">
+                                                    {{m.m}}
+                                                </option>
+                                            </select>
+                                        </div>
 
-                                <div class="col-sm text-right">
-                                    <button type="button" class="btn bg-blue" (click)="filter()">
-                                        <i class="fas fa-search"></i>
-                                    </button>
+                                        <div class="col-sm">
+                                            <select class="form-control" [(ngModel)]="quarter">
+                                                <option [value]="dQuarter">Choose quarter</option>
+                                                <option *ngFor=" let qt of listQuarter" [value]="qt.q">
+                                                    {{qt.q}}
+                                                </option>
+                                            </select>
+                                        </div>
 
-                                    <button type="button" class="btn bg-secondary mx-3" (click)="setup()">
-                                        <i class="fas fa-redo-alt"></i>
-                                    </button>
+                                        <div class="col-sm text-right">
+                                            <button type="button" class="btn bg-blue" (click)="filterByCategory()">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+
+                                            <button type="button" class="btn bg-secondary mx-3"
+                                                (click)="setupByCategory()">
+                                                <i class="fas fa-redo-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor=" let st of statistics | paginate: { itemsPerPage: pageSize, currentPage: pageIndex, totalItems:count }">
+                                        <td>{{ st.categoryName }}</td>
+                                        <td>{{ st.quantity }}</td>
+                                    </tr>
+                                    <th class="col"><button type="button" class="btn btn-sm bg-secondary"
+                                            (click)="chart()">Chart</button></th>
+                                </tbody>
+
+                            </table>
+                        </div>
                     </div>
-                </div>
+                </section>
 
-                <div class="card-body table-responsive p-0">
-                    <table class="table table-hover text-nowrap">
-                      <thead class="bg-light">
-                        <tr>
-                          <th>Category</th>
-                          <th>Quantity</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor=" let st of statistics | paginate: { itemsPerPage: pageSize, currentPage: pageIndex, totalItems:count }">
-                            <td>{{ st.categoryName }}</td>
-                          <td>{{ st.quantity }}</td>
-                        </tr>
-                        <th class="col"><button type="button" class="btn btn-sm bg-secondary" (click)="chart()">Chart</button></th>
-                      </tbody>
-                     
-                    </table>
+                <div style="display: block;" *ngIf="pieChartLabels && pieChartData">
+                    <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
+                        [options]="pieChartOptions" [plugins]="pieChartPlugins" [legend]="pieChartLegend"
+                        [colors]="pieChartColors">
+                    </canvas>
                 </div>
-            </div>
+            </section>
+
+            <!--tab2-->
+            <section id="rauchbier" class="tab-panel">
+                <section class="content px-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="input-group">
+                                <div class="container">
+                                    <div class="row">
+
+                                        <div class="col-sm">
+                                            <select class="form-control" [(ngModel)]="status">
+                                                <option [value]="dSatus">Choose status</option>
+                                                <option *ngFor=" let st of listStatus" [value]="st.s">
+                                                    {{st.s}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm form-group">
+                                            <input type="text" placeholder="Choose date" class="form-control"
+                                                bsDatepicker (bsValueChange)="valueFromDate($event)">
+                                        </div>
+                                        <div class="col-sm form-group">
+                                            <input type="text" placeholder="Choose date" class="form-control"
+                                                bsDatepicker (bsValueChange)="valueToDate($event)">
+                                        </div>
+
+                                        <div class="col-sm">
+                                            <select class="form-control" [(ngModel)]="month">
+                                                <option [value]="dMonth">Choose month</option>
+                                                <option *ngFor=" let m of listMonth" [value]="m.m">
+                                                    {{m.m}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm">
+                                            <select class="form-control" [(ngModel)]="quarter">
+                                                <option [value]="dQuarter">Choose quarter</option>
+                                                <option *ngFor=" let qt of listQuarter" [value]="qt.q">
+                                                    {{qt.q}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm text-right">
+                                            <button type="button" class="btn bg-blue" (click)="filterBorrow()">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+
+                                            <button type="button" class="btn bg-secondary mx-3" (click)="setupBorrow()">
+                                                <i class="fas fa-redo-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th>Book Name</th>
+                                        <th>Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor=" let list of listBorrows | paginate: { itemsPerPage: pageSize, currentPage: pageIndex, totalItems:count }">
+                                        <td>{{ list.bookName }}</td>
+                                        <td>{{ list.quantity }}</td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </section>
         </div>
-    </section>
-
-    <div style="display: block;" *ngIf="pieChartLabels && pieChartData">
-        <canvas baseChart 
-          [data]="pieChartData" 
-          [labels]="pieChartLabels" 
-          [chartType]="pieChartType"
-          [options]="pieChartOptions"
-          [plugins]="pieChartPlugins"
-          [legend]="pieChartLegend"
-          [colors]="pieChartColors"
-          >
-        </canvas>
-      </div>
+    </div>
 </div>

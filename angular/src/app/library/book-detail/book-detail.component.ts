@@ -11,7 +11,8 @@ import { ActivatedRoute } from '@angular/router'
 import {
   LibraryServiceProxy,
   GetBookLibraryDto,
-  BorrowBookDetailDto
+  BorrowBookDetailDto,
+  BorrowBookDetaiServiceProxy
 } from '@shared/service-proxies/service-proxies';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 
@@ -24,18 +25,14 @@ import { appModuleAnimation } from '@shared/animations/routerTransition';
 export class BookDetailComponent extends AppComponentBase implements OnInit {
 
   book : GetBookLibraryDto= new GetBookLibraryDto();
-  qty=1;
- 
-  itemObject: BorrowBookDetailDto = new BorrowBookDetailDto();
-
-  cart: Array<BorrowBookDetailDto> = [];
-
   saving = false;
   @Output() onSave = new EventEmitter<any>();
+  borrowBook: BorrowBookDetailDto = new BorrowBookDetailDto();
 
   constructor(
     injector: Injector,
     private _libraryService: LibraryServiceProxy,
+    private _borrowBookService: BorrowBookDetaiServiceProxy,
     private _modalService: BsModalService,
     private route: ActivatedRoute,
   ) {
@@ -51,42 +48,24 @@ export class BookDetailComponent extends AppComponentBase implements OnInit {
       .getBookDetail(this.route.snapshot.paramMap.get('bookId'))
       .subscribe(
         response => {
-          this.book = response;
+          this.book = response;          
         }
       );
   }
 
-  plus(){
-    this.qty=this.qty+1;
-  }
-
-  minus(){
-    if(this.qty !=0){
-      this.qty=this.qty-1;
-    }
-  }
-
-  onClick(borrowBookDetail: GetBookLibraryDto): void {
-    this.itemObject.bookId = borrowBookDetail.id;
-    this.itemObject.priceBorrow = borrowBookDetail.priceBorrow;
-    this.itemObject.qty = this.qty;
-    this.itemObject.bookName = borrowBookDetail.name;
-    this.itemObject.urlImage= borrowBookDetail.urlImage;
-
-    if(JSON.parse(localStorage.getItem('object'))) {
-      this.cart = JSON.parse(localStorage.getItem('object'))
-      let existItemIndex = this.cart.findIndex((item) => item.bookId === this.itemObject.bookId)
-      if(existItemIndex >= 0) {
-        this.cart[existItemIndex].qty += this.itemObject.qty
-      }
-      else {
-        this.cart.push(this.itemObject)
-      }
-    }
-    else {
-      this.cart.push(this.itemObject)
-    }
-    localStorage.setItem("object", JSON.stringify(this.cart));
-    this.notify.info(this.l('Add successfully'));
+  save(): void {
+    this.saving = true;
+    this.borrowBook.bookId = this.route.snapshot.paramMap.get('bookId');
+    this._borrowBookService
+      .addBorrowBookDetail(this.borrowBook)
+      .pipe(
+        finalize(() => {
+          this.saving = false;
+        })
+      )
+      .subscribe(() => {
+        this.notify.info(this.l('Successfully'));
+        this.onSave.emit();
+      });
   }
 }

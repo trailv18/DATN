@@ -8,22 +8,28 @@ import { Label, SingleDataSet } from 'ng2-charts';
 @Component({
   selector: 'app-statistic-report',
   templateUrl: './statistic-report.component.html',
+  styleUrls: ['./statistic-report.component.css'],
   animations: [appModuleAnimation()]
 })
 export class StatisticReportComponent extends AppComponentBase implements OnInit {
 
   statistics: StatisticReportDto[];
+  listBorrows: StatisticReportDto[];
   fromDate;
   toDate;
   month: number;
   quarter: number;
+  status: string;
 
   dMonth: undefined;
   dQuarter: undefined;
+  dSatus: undefined;
 
   pageIndex: number = 1;
   count: number;
   pageSize: number=9;
+
+  active = 1;
 
   listMonth = [
     { m: 1 }, { m: 2 }, { m: 3 }, { m: 4 }, { m: 5 }, { m: 6 }, { m: 7 }, { m: 8 }, { m: 9 }, { m: 10 }, { m: 11 }, { m: 12 }
@@ -31,6 +37,10 @@ export class StatisticReportComponent extends AppComponentBase implements OnInit
 
   listQuarter = [
     { q: 1 }, { q: 2 }, { q: 3 }, { q: 4 }
+  ]
+
+  listStatus = [
+    { s: "Đã trả" }, { s: "Đang mượn" }, { s: "Quá hạn"}
   ]
 
   valueFromDate(value: Date): void {
@@ -71,33 +81,32 @@ export class StatisticReportComponent extends AppComponentBase implements OnInit
   }
 
   ngOnInit(): void {
-    this.list();
+    this.listByCategory();
+    this.listBorrow();
   }
 
-  list(): void {
+  listByCategory(): void {
     this._statisticService
-      .getStatisticByCriteria(this.pageIndex , this.fromDate, this.toDate,  this.month, this.quarter)
+      .getStatisticByCategory(this.pageIndex , this.fromDate, this.toDate,  this.month, this.quarter)
       .subscribe(response => {        
         this.statistics = response.items;
         this.count = response.count;
         this.pageIndex = response.pageIndex;
-        this.pageSize = response.pageSize;
-        console.log("sssss", response.items);
-        
+        this.pageSize = response.pageSize;        
       }
       );
   }
 
-  filter() {
+  filterByCategory() {
     if (this.fromDate === undefined && this.toDate === undefined && this.month === undefined
       && this.quarter === undefined) {
-      this.list();
+      this.listByCategory();
     } else {
-      this.list();
+      this.listByCategory();
     }
   }
 
-  setup() {
+  setupByCategory() {
     this.fromDate = undefined;
     this.toDate = undefined;
     this.month = this.dMonth;
@@ -105,7 +114,7 @@ export class StatisticReportComponent extends AppComponentBase implements OnInit
     this.pieChartLabels = [];
     this.pieChartData = [];
     this.statistics = undefined;
-    this.list();
+    this.listByCategory();
   }
 
   chart() {
@@ -120,6 +129,36 @@ export class StatisticReportComponent extends AppComponentBase implements OnInit
       qty = (this.statistics[i].quantity / total) * 100
       this.pieChartData.push(Math.ceil(qty));
     }
+  }
+
+  listBorrow(): void {
+    this._statisticService
+      .getStatisticByBorrow(this.pageIndex , this.fromDate, this.toDate,  this.month, this.quarter, this.status)
+      .subscribe(response => {        
+        this.listBorrows= response.items;
+        this.count = response.count;
+        this.pageIndex = response.pageIndex;
+        this.pageSize = response.pageSize;        
+      }
+      );
+  }
+
+  filterBorrow() {
+    if (this.status ===undefined &&this.fromDate === undefined && this.toDate === undefined && this.month === undefined
+      && this.quarter === undefined) {
+      this.listBorrow();
+    } else {
+      this.listBorrow();
+    }
+  }
+
+  setupBorrow() {
+    this.fromDate = undefined;
+    this.toDate = undefined;
+    this.month = this.dMonth;
+    this.quarter = this.dQuarter;
+    this.status = this.dSatus;
+    this.listBorrow();
   }
 
 }

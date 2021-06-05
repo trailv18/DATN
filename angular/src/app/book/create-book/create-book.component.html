@@ -9,6 +9,7 @@
     (onCloseClick)="bsModalRef.hide()"
   ></abp-modal-header>
   <div class="modal-body">
+    
       <div class="form-group row required">
         <label class="col-md-3 col-form-label" for="name">
           {{ "Name" | localize }}
@@ -32,29 +33,6 @@
           ></abp-validation-summary>
         </div>
       </div>
-
-      <div class="form-group row required">
-          <label class="col-md-3 col-form-label" for="priceBorrow">
-            {{ "Price Borrow" | localize }}
-          </label>
-          <div class="col-md-9">
-            <input
-              type="text"
-              class="form-control"
-              name="priceBorrow"
-              id="priceBorrow"
-              maxlength="100"
-              required
-              [(ngModel)]="book.priceBorrow"
-              #nameModel="ngModel"
-              #nameEl
-            />
-            <abp-validation-summary
-              [control]="nameModel"
-              [controlEl]="nameEl"
-            ></abp-validation-summary>
-          </div>
-        </div>
 
         <div class="form-group row required">
           <label class="col-md-3 col-form-label" for="stock">

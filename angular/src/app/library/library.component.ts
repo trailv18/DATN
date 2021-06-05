@@ -10,7 +10,8 @@ import {
   CategoryDto,
   AuthorServiceProxy,
   PublisherServiceProxy,
-  CategoryServiceProxy
+  CategoryServiceProxy,
+  BorrowBookDetaiServiceProxy,
 } from '@shared/service-proxies/service-proxies';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 
@@ -36,7 +37,6 @@ export class LibraryComponent extends AppComponentBase implements OnInit {
   publishers: PublisherDto[];
   authors: AuthorDto[];
   categories: CategoryDto[];
-
   constructor(
     injector: Injector,
     private _libraryService: LibraryServiceProxy,
@@ -76,7 +76,7 @@ export class LibraryComponent extends AppComponentBase implements OnInit {
 
   onChangePage(event) {
     this.pageNumber = event;
-    this.list()
+    this.list();
   }
 
   setup() {
@@ -97,7 +97,6 @@ export class LibraryComponent extends AppComponentBase implements OnInit {
         }
       );
   }
-
 
   listPublisher(): void {
     this._publisherService

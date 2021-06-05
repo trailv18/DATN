@@ -52,7 +52,7 @@ export class CategoryComponent extends AppComponentBase implements OnInit {
           this.categories = response.items;
           this.count = response.count;
           this.pageNumber = response.pageIndex;
-          this.pageSize = response.pageSize;          
+          this.pageSize = response.pageSize;               
         }
       );
   }

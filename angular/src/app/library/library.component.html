@@ -1,6 +1,7 @@
 <div [@routerTransition] class="" style="padding-top: 50px;">
 
   <section class="content px-2">
+
     <div class="container-fluid" style="padding-top: 50px; padding-left: 55px;">
       <div class="row">
 
@@ -46,7 +47,7 @@
         </div>
       </div>
     </div>
-
+    
     <div class="container-fluid">
       <div class="row mt-5">
         <div class="col-3" *ngFor=" let book of books 
@@ -56,13 +57,7 @@
               <img [src]="book.urlImage" class="card-img-top" width="100%" height="250px">
             </a>
             <div class="card-body pt-0 px-0 py-2">
-              <div class="d-flex flex-row justify-content-between px-3 pb-4">
-                <div class="d-flex flex-column"><span class="text">Price Borrow</span></div>
-                <div class="d-flex flex-column">
-                  <h5 class="mb-0">{{book.priceBorrow}}</h5><small class="text-muted text-right">(VND)</small>
-                </div>
-
-              </div>
+              
               <p class="text-truncate key pl-3"><span><a [routerLink]="['/app/book-detail',book.id]"
                     routerLinkActive="active">{{book.name}}</a></span></p>
               <div class="mx-3 mt-3 mb-2">

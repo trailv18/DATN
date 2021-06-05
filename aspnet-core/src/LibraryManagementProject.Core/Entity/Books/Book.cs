@@ -15,7 +15,6 @@ namespace LibraryManagementProject.Entity.Books
         public Guid CategoryId { get; set; }
         public Category Category { get; set; }
         public int Stock { get; set; }
-        public int PriceBorrow { get; set; }
         public Guid PublisherId { get; set; }
         public Publisher Publisher { get; set; }
         public Guid AuthorId { get; set; }

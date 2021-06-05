@@ -9,7 +9,8 @@ import { finalize } from 'rxjs/operators';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { AppComponentBase } from '@shared/app-component-base';
 import {
-  BorrowBookServiceProxy, UpdateStatusDto
+  BorrowBookDetaiServiceProxy,
+  UpdateStatusDto
 } from '@shared/service-proxies/service-proxies';
 import { forEach as _forEach, map as _map } from 'lodash-es';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
@@ -36,7 +37,7 @@ export class UpdateStatusComponent extends AppComponentBase implements OnInit {
   constructor(
     injector: Injector,
     public bsModalRef: BsModalRef,
-    private _borrowBookService: BorrowBookServiceProxy,
+    private _borrowBookService: BorrowBookDetaiServiceProxy,
   ) {
     super(injector);
   }
@@ -64,4 +65,3 @@ export class UpdateStatusComponent extends AppComponentBase implements OnInit {
   }
 
 }
-

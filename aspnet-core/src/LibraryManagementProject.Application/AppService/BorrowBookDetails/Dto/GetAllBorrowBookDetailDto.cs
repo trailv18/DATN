@@ -9,9 +9,14 @@ namespace LibraryManagementProject.AppService.BorrowBookDetails.Dto
     public class GetAllBorrowBookDetailDto
     {
         public Guid Id { get; set; }
-        public string Book { get; set; }
+        public Guid BookId { get; set; }
+        public string BookName { get; set; }
+        public DateTime DateBorrow { get; set; }
+        public DateTime DateRepay { get; set; }
+        public string Status { get; set; }
+        public string UserName { get; set; }
         public int Qty { get; set; }
-        public int PriceBorrow { get; set; }
-        public int Total { get; set; }
+        public string Note { get; set; }
+
     }
 }

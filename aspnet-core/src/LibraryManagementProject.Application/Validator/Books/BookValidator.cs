@@ -13,7 +13,6 @@ namespace LibraryManagementProject.Validator.Books
             RuleFor(value => value.Id).NotNull();
             RuleFor(value => value.Name).NotNull().Length(5, 150);
             RuleFor(value => value.Stock).NotNull().LessThan(1500);
-            RuleFor(value => value.PriceBorrow).NotNull();
             RuleFor(value => value.CategoryId).NotNull();
             RuleFor(value => value.AuthorId).NotNull();
             RuleFor(value => value.PublisherId).NotNull();

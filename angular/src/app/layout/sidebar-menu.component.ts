@@ -43,7 +43,7 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
 
   getMenuItems(): MenuItem[] {
     return [
-      new MenuItem(this.l('Library'), '/app/home', 'fas fa-home', 'Pages.Users'),
+      new MenuItem(this.l('Library'), '/app/home', 'fas fa-home', 'Pages.Readers'),
       new MenuItem(
         this.l('Users'),
         '/app/users',
@@ -81,29 +81,24 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
         'Pages.Librarians'
       ),
       new MenuItem(
-        this.l('Borrows'),
+        this.l('Manage Borrows'),
         '/app/borrows',
         'fas fa-clipboard-list',
         'Pages.Librarians'
       ),
       new MenuItem(
         this.l('Statistic-Report'),
-        '/app/statistic-report',
+        '/app/statistic-report-category',
         'fas fa-flag',
         'Pages.Librarians'
       ),
       new MenuItem(
-        this.l('Cart'),
-        '/app/cart',
-        'fas fa-cart-plus',
-        'Pages.Readers'
-      ),
-      new MenuItem(
         this.l('Borrow'),
-        '/app/reader-borrow',
-        'fas fa-clipboard-list',
+        '/app/borrows-reader',
+        'fas fa-flag',
         'Pages.Readers'
       ),
+      
     ];
   }
 

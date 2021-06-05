@@ -822,7 +822,7 @@ export class BookServiceProxy {
 }
 
 @Injectable()
-export class BorrowBookServiceProxy {
+export class BorrowBookDetaiServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -839,8 +839,8 @@ export class BorrowBookServiceProxy {
      * @param month (optional) 
      * @return Success
      */
-    getPageBorrowBook(page: number | null | undefined, fromDate: moment.Moment | null | undefined, toDate: moment.Moment | null | undefined, month: number | null | undefined): Observable<GetAllBorrowBookDtoPageResult> {
-        let url_ = this.baseUrl + "/api/services/app/BorrowBook/GetPageBorrowBook?";
+    getAllBorrowBookDetail(page: number | null | undefined, fromDate: moment.Moment | null | undefined, toDate: moment.Moment | null | undefined, month: number | null | undefined): Observable<GetAllBorrowBookDetailDtoPageResult> {
+        let url_ = this.baseUrl + "/api/services/app/BorrowBookDetai/GetAllBorrowBookDetail?";
         if (page !== undefined && page !== null)
             url_ += "page=" + encodeURIComponent("" + page) + "&";
         if (fromDate !== undefined && fromDate !== null)
@@ -860,20 +860,20 @@ export class BorrowBookServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetPageBorrowBook(response_);
+            return this.processGetAllBorrowBookDetail(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetPageBorrowBook(<any>response_);
+                    return this.processGetAllBorrowBookDetail(<any>response_);
                 } catch (e) {
-                    return <Observable<GetAllBorrowBookDtoPageResult>><any>_observableThrow(e);
+                    return <Observable<GetAllBorrowBookDetailDtoPageResult>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<GetAllBorrowBookDtoPageResult>><any>_observableThrow(response_);
+                return <Observable<GetAllBorrowBookDetailDtoPageResult>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetPageBorrowBook(response: HttpResponseBase): Observable<GetAllBorrowBookDtoPageResult> {
+    protected processGetAllBorrowBookDetail(response: HttpResponseBase): Observable<GetAllBorrowBookDetailDtoPageResult> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -884,7 +884,7 @@ export class BorrowBookServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = GetAllBorrowBookDtoPageResult.fromJS(resultData200);
+            result200 = GetAllBorrowBookDetailDtoPageResult.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -892,44 +892,43 @@ export class BorrowBookServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<GetAllBorrowBookDtoPageResult>(<any>null);
+        return _observableOf<GetAllBorrowBookDetailDtoPageResult>(<any>null);
     }
 
     /**
-     * @param id (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    getBorrowBookDetailById(id: string | undefined): Observable<GetBorrowBookDto[]> {
-        let url_ = this.baseUrl + "/api/services/app/BorrowBook/GetBorrowBookDetailById?";
-        if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
-        else if (id !== undefined)
-            url_ += "id=" + encodeURIComponent("" + id) + "&";
+    addBorrowBookDetail(body: BorrowBookDetailDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/BorrowBookDetai/AddBorrowBookDetail";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Accept": "text/plain"
+                "Content-Type": "application/json-patch+json",
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetBorrowBookDetailById(response_);
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAddBorrowBookDetail(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetBorrowBookDetailById(<any>response_);
+                    return this.processAddBorrowBookDetail(<any>response_);
                 } catch (e) {
-                    return <Observable<GetBorrowBookDto[]>><any>_observableThrow(e);
+                    return <Observable<void>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<GetBorrowBookDto[]>><any>_observableThrow(response_);
+                return <Observable<void>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetBorrowBookDetailById(response: HttpResponseBase): Observable<GetBorrowBookDto[]> {
+    protected processAddBorrowBookDetail(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -938,29 +937,22 @@ export class BorrowBookServiceProxy {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200.push(GetBorrowBookDto.fromJS(item));
-            }
-            return _observableOf(result200);
+            return _observableOf<void>(<any>null);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<GetBorrowBookDto[]>(<any>null);
+        return _observableOf<void>(<any>null);
     }
 
     /**
      * @param id (optional) 
      * @return Success
      */
-    getById(id: string | undefined): Observable<BorrowBook> {
-        let url_ = this.baseUrl + "/api/services/app/BorrowBook/GetById?";
+    getById(id: string | undefined): Observable<BorrowBookDetail> {
+        let url_ = this.baseUrl + "/api/services/app/BorrowBookDetai/GetById?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
         else if (id !== undefined)
@@ -982,14 +974,14 @@ export class BorrowBookServiceProxy {
                 try {
                     return this.processGetById(<any>response_);
                 } catch (e) {
-                    return <Observable<BorrowBook>><any>_observableThrow(e);
+                    return <Observable<BorrowBookDetail>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<BorrowBook>><any>_observableThrow(response_);
+                return <Observable<BorrowBookDetail>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetById(response: HttpResponseBase): Observable<BorrowBook> {
+    protected processGetById(response: HttpResponseBase): Observable<BorrowBookDetail> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1000,7 +992,7 @@ export class BorrowBookServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = BorrowBook.fromJS(resultData200);
+            result200 = BorrowBookDetail.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1008,7 +1000,7 @@ export class BorrowBookServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<BorrowBook>(<any>null);
+        return _observableOf<BorrowBookDetail>(<any>null);
     }
 
     /**
@@ -1016,7 +1008,7 @@ export class BorrowBookServiceProxy {
      * @return Success
      */
     updateStatus(body: UpdateStatusDto | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/services/app/BorrowBook/UpdateStatus";
+        let url_ = this.baseUrl + "/api/services/app/BorrowBookDetai/UpdateStatus";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -1067,8 +1059,8 @@ export class BorrowBookServiceProxy {
      * @param page (optional) 
      * @return Success
      */
-    getBorrowBookPageByUserId(page: number | null | undefined): Observable<GetAllBorrowBookDtoPageResult> {
-        let url_ = this.baseUrl + "/api/services/app/BorrowBook/GetBorrowBookPageByUserId?";
+    getBorrowBookPageByUserId(page: number | null | undefined): Observable<GetAllBorrowBookDetailDtoPageResult> {
+        let url_ = this.baseUrl + "/api/services/app/BorrowBookDetai/GetBorrowBookPageByUserId?";
         if (page !== undefined && page !== null)
             url_ += "page=" + encodeURIComponent("" + page) + "&";
         url_ = url_.replace(/[?&]$/, "");
@@ -1088,14 +1080,14 @@ export class BorrowBookServiceProxy {
                 try {
                     return this.processGetBorrowBookPageByUserId(<any>response_);
                 } catch (e) {
-                    return <Observable<GetAllBorrowBookDtoPageResult>><any>_observableThrow(e);
+                    return <Observable<GetAllBorrowBookDetailDtoPageResult>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<GetAllBorrowBookDtoPageResult>><any>_observableThrow(response_);
+                return <Observable<GetAllBorrowBookDetailDtoPageResult>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetBorrowBookPageByUserId(response: HttpResponseBase): Observable<GetAllBorrowBookDtoPageResult> {
+    protected processGetBorrowBookPageByUserId(response: HttpResponseBase): Observable<GetAllBorrowBookDetailDtoPageResult> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1106,7 +1098,7 @@ export class BorrowBookServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = GetAllBorrowBookDtoPageResult.fromJS(resultData200);
+            result200 = GetAllBorrowBookDetailDtoPageResult.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1114,101 +1106,34 @@ export class BorrowBookServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<GetAllBorrowBookDtoPageResult>(<any>null);
-    }
-}
-
-@Injectable()
-export class BorrowBookDetaiServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        return _observableOf<GetAllBorrowBookDetailDtoPageResult>(<any>null);
     }
 
     /**
+     * @param id (optional) 
      * @return Success
      */
-    getAllBorrowBookDetail(): Observable<GetAllBorrowBookDetailDto[]> {
-        let url_ = this.baseUrl + "/api/services/app/BorrowBookDetai/GetAllBorrowBookDetail";
+    delete(id: string | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/BorrowBookDetai/Delete?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Accept": "text/plain"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetAllBorrowBookDetail(response_);
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetAllBorrowBookDetail(<any>response_);
-                } catch (e) {
-                    return <Observable<GetAllBorrowBookDetailDto[]>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<GetAllBorrowBookDetailDto[]>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetAllBorrowBookDetail(response: HttpResponseBase): Observable<GetAllBorrowBookDetailDto[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200.push(GetAllBorrowBookDetailDto.fromJS(item));
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<GetAllBorrowBookDetailDto[]>(<any>null);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    addBorrowBookDetail(body: BorrowBookDetailDto[] | null | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/services/app/BorrowBookDetai/AddBorrowBookDetail";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json-patch+json",
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAddBorrowBookDetail(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processAddBorrowBookDetail(<any>response_);
+                    return this.processDelete(<any>response_);
                 } catch (e) {
                     return <Observable<void>><any>_observableThrow(e);
                 }
@@ -1217,7 +1142,7 @@ export class BorrowBookDetaiServiceProxy {
         }));
     }
 
-    protected processAddBorrowBookDetail(response: HttpResponseBase): Observable<void> {
+    protected processDelete(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2646,8 +2571,8 @@ export class StatisticReportServiceProxy {
      * @param quarter (optional) 
      * @return Success
      */
-    getStatisticByCriteria(page: number | null | undefined, fromDate: moment.Moment | null | undefined, toDate: moment.Moment | null | undefined, month: number | null | undefined, quarter: number | null | undefined): Observable<StatisticReportDtoPageResult> {
-        let url_ = this.baseUrl + "/api/services/app/StatisticReport/GetStatisticByCriteria?";
+    getStatisticByCategory(page: number | null | undefined, fromDate: moment.Moment | null | undefined, toDate: moment.Moment | null | undefined, month: number | null | undefined, quarter: number | null | undefined): Observable<StatisticReportDtoPageResult> {
+        let url_ = this.baseUrl + "/api/services/app/StatisticReport/GetStatisticByCategory?";
         if (page !== undefined && page !== null)
             url_ += "page=" + encodeURIComponent("" + page) + "&";
         if (fromDate !== undefined && fromDate !== null)
@@ -2669,11 +2594,11 @@ export class StatisticReportServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetStatisticByCriteria(response_);
+            return this.processGetStatisticByCategory(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetStatisticByCriteria(<any>response_);
+                    return this.processGetStatisticByCategory(<any>response_);
                 } catch (e) {
                     return <Observable<StatisticReportDtoPageResult>><any>_observableThrow(e);
                 }
@@ -2682,7 +2607,76 @@ export class StatisticReportServiceProxy {
         }));
     }
 
-    protected processGetStatisticByCriteria(response: HttpResponseBase): Observable<StatisticReportDtoPageResult> {
+    protected processGetStatisticByCategory(response: HttpResponseBase): Observable<StatisticReportDtoPageResult> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StatisticReportDtoPageResult.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<StatisticReportDtoPageResult>(<any>null);
+    }
+
+    /**
+     * @param page (optional) 
+     * @param fromDate (optional) 
+     * @param toDate (optional) 
+     * @param month (optional) 
+     * @param quarter (optional) 
+     * @param status (optional) 
+     * @return Success
+     */
+    getStatisticByBorrow(page: number | null | undefined, fromDate: moment.Moment | null | undefined, toDate: moment.Moment | null | undefined, month: number | null | undefined, quarter: number | null | undefined, status: string | null | undefined): Observable<StatisticReportDtoPageResult> {
+        let url_ = this.baseUrl + "/api/services/app/StatisticReport/GetStatisticByBorrow?";
+        if (page !== undefined && page !== null)
+            url_ += "page=" + encodeURIComponent("" + page) + "&";
+        if (fromDate !== undefined && fromDate !== null)
+            url_ += "fromDate=" + encodeURIComponent(fromDate ? "" + fromDate.toJSON() : "") + "&";
+        if (toDate !== undefined && toDate !== null)
+            url_ += "toDate=" + encodeURIComponent(toDate ? "" + toDate.toJSON() : "") + "&";
+        if (month !== undefined && month !== null)
+            url_ += "month=" + encodeURIComponent("" + month) + "&";
+        if (quarter !== undefined && quarter !== null)
+            url_ += "quarter=" + encodeURIComponent("" + quarter) + "&";
+        if (status !== undefined && status !== null)
+            url_ += "status=" + encodeURIComponent("" + status) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetStatisticByBorrow(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetStatisticByBorrow(<any>response_);
+                } catch (e) {
+                    return <Observable<StatisticReportDtoPageResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<StatisticReportDtoPageResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetStatisticByBorrow(response: HttpResponseBase): Observable<StatisticReportDtoPageResult> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -4142,7 +4136,6 @@ export interface IAuthor {
 export class GetAllBookDto implements IGetAllBookDto {
     id: string;
     name: string | undefined;
-    priceBorrow: number;
     stock: number;
     category: string | undefined;
     publisher: string | undefined;
@@ -4164,7 +4157,6 @@ export class GetAllBookDto implements IGetAllBookDto {
         if (_data) {
             this.id = _data["id"];
             this.name = _data["name"];
-            this.priceBorrow = _data["priceBorrow"];
             this.stock = _data["stock"];
             this.category = _data["category"];
             this.publisher = _data["publisher"];
@@ -4186,7 +4178,6 @@ export class GetAllBookDto implements IGetAllBookDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["name"] = this.name;
-        data["priceBorrow"] = this.priceBorrow;
         data["stock"] = this.stock;
         data["category"] = this.category;
         data["publisher"] = this.publisher;
@@ -4208,7 +4199,6 @@ export class GetAllBookDto implements IGetAllBookDto {
 export interface IGetAllBookDto {
     id: string;
     name: string | undefined;
-    priceBorrow: number;
     stock: number;
     category: string | undefined;
     publisher: string | undefined;
@@ -4284,7 +4274,6 @@ export interface IGetAllBookDtoPageResult {
 export class BookDto implements IBookDto {
     id: string;
     name: string | undefined;
-    priceBorrow: number;
     stock: number;
     categoryId: string;
     publisherId: string;
@@ -4306,7 +4295,6 @@ export class BookDto implements IBookDto {
         if (_data) {
             this.id = _data["id"];
             this.name = _data["name"];
-            this.priceBorrow = _data["priceBorrow"];
             this.stock = _data["stock"];
             this.categoryId = _data["categoryId"];
             this.publisherId = _data["publisherId"];
@@ -4328,7 +4316,6 @@ export class BookDto implements IBookDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["name"] = this.name;
-        data["priceBorrow"] = this.priceBorrow;
         data["stock"] = this.stock;
         data["categoryId"] = this.categoryId;
         data["publisherId"] = this.publisherId;
@@ -4350,7 +4337,6 @@ export class BookDto implements IBookDto {
 export interface IBookDto {
     id: string;
     name: string | undefined;
-    priceBorrow: number;
     stock: number;
     categoryId: string;
     publisherId: string;
@@ -4471,7 +4457,6 @@ export class Book implements IBook {
     categoryId: string;
     category: Category;
     stock: number;
-    priceBorrow: number;
     publisherId: string;
     publisher: Publisher;
     authorId: string;
@@ -4496,7 +4481,6 @@ export class Book implements IBook {
             this.categoryId = _data["categoryId"];
             this.category = _data["category"] ? Category.fromJS(_data["category"]) : <any>undefined;
             this.stock = _data["stock"];
-            this.priceBorrow = _data["priceBorrow"];
             this.publisherId = _data["publisherId"];
             this.publisher = _data["publisher"] ? Publisher.fromJS(_data["publisher"]) : <any>undefined;
             this.authorId = _data["authorId"];
@@ -4521,7 +4505,6 @@ export class Book implements IBook {
         data["categoryId"] = this.categoryId;
         data["category"] = this.category ? this.category.toJSON() : <any>undefined;
         data["stock"] = this.stock;
-        data["priceBorrow"] = this.priceBorrow;
         data["publisherId"] = this.publisherId;
         data["publisher"] = this.publisher ? this.publisher.toJSON() : <any>undefined;
         data["authorId"] = this.authorId;
@@ -4546,7 +4529,6 @@ export interface IBook {
     categoryId: string;
     category: Category;
     stock: number;
-    priceBorrow: number;
     publisherId: string;
     publisher: Publisher;
     authorId: string;
@@ -4557,15 +4539,18 @@ export interface IBook {
     id: string;
 }
 
-export class GetAllBorrowBookDto implements IGetAllBorrowBookDto {
+export class GetAllBorrowBookDetailDto implements IGetAllBorrowBookDetailDto {
     id: string;
+    bookId: string;
+    bookName: string | undefined;
     dateBorrow: moment.Moment;
     dateRepay: moment.Moment;
-    total: number;
     status: string | undefined;
-    user: string | undefined;
+    userName: string | undefined;
+    qty: number;
+    note: string | undefined;
 
-    constructor(data?: IGetAllBorrowBookDto) {
+    constructor(data?: IGetAllBorrowBookDetailDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -4577,17 +4562,20 @@ export class GetAllBorrowBookDto implements IGetAllBorrowBookDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.bookId = _data["bookId"];
+            this.bookName = _data["bookName"];
             this.dateBorrow = _data["dateBorrow"] ? moment(_data["dateBorrow"].toString()) : <any>undefined;
             this.dateRepay = _data["dateRepay"] ? moment(_data["dateRepay"].toString()) : <any>undefined;
-            this.total = _data["total"];
             this.status = _data["status"];
-            this.user = _data["user"];
+            this.userName = _data["userName"];
+            this.qty = _data["qty"];
+            this.note = _data["note"];
         }
     }
 
-    static fromJS(data: any): GetAllBorrowBookDto {
+    static fromJS(data: any): GetAllBorrowBookDetailDto {
         data = typeof data === 'object' ? data : {};
-        let result = new GetAllBorrowBookDto();
+        let result = new GetAllBorrowBookDetailDto();
         result.init(data);
         return result;
     }
@@ -4595,38 +4583,44 @@ export class GetAllBorrowBookDto implements IGetAllBorrowBookDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["bookId"] = this.bookId;
+        data["bookName"] = this.bookName;
         data["dateBorrow"] = this.dateBorrow ? this.dateBorrow.toISOString() : <any>undefined;
         data["dateRepay"] = this.dateRepay ? this.dateRepay.toISOString() : <any>undefined;
-        data["total"] = this.total;
         data["status"] = this.status;
-        data["user"] = this.user;
+        data["userName"] = this.userName;
+        data["qty"] = this.qty;
+        data["note"] = this.note;
         return data; 
     }
 
-    clone(): GetAllBorrowBookDto {
+    clone(): GetAllBorrowBookDetailDto {
         const json = this.toJSON();
-        let result = new GetAllBorrowBookDto();
+        let result = new GetAllBorrowBookDetailDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IGetAllBorrowBookDto {
+export interface IGetAllBorrowBookDetailDto {
     id: string;
+    bookId: string;
+    bookName: string | undefined;
     dateBorrow: moment.Moment;
     dateRepay: moment.Moment;
-    total: number;
     status: string | undefined;
-    user: string | undefined;
+    userName: string | undefined;
+    qty: number;
+    note: string | undefined;
 }
 
-export class GetAllBorrowBookDtoPageResult implements IGetAllBorrowBookDtoPageResult {
+export class GetAllBorrowBookDetailDtoPageResult implements IGetAllBorrowBookDetailDtoPageResult {
     count: number;
     pageIndex: number;
     pageSize: number;
-    items: GetAllBorrowBookDto[] | undefined;
+    items: GetAllBorrowBookDetailDto[] | undefined;
 
-    constructor(data?: IGetAllBorrowBookDtoPageResult) {
+    constructor(data?: IGetAllBorrowBookDetailDtoPageResult) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -4643,14 +4637,14 @@ export class GetAllBorrowBookDtoPageResult implements IGetAllBorrowBookDtoPageRe
             if (Array.isArray(_data["items"])) {
                 this.items = [] as any;
                 for (let item of _data["items"])
-                    this.items.push(GetAllBorrowBookDto.fromJS(item));
+                    this.items.push(GetAllBorrowBookDetailDto.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): GetAllBorrowBookDtoPageResult {
+    static fromJS(data: any): GetAllBorrowBookDetailDtoPageResult {
         data = typeof data === 'object' ? data : {};
-        let result = new GetAllBorrowBookDtoPageResult();
+        let result = new GetAllBorrowBookDetailDtoPageResult();
         result.init(data);
         return result;
     }
@@ -4668,32 +4662,34 @@ export class GetAllBorrowBookDtoPageResult implements IGetAllBorrowBookDtoPageRe
         return data; 
     }
 
-    clone(): GetAllBorrowBookDtoPageResult {
+    clone(): GetAllBorrowBookDetailDtoPageResult {
         const json = this.toJSON();
-        let result = new GetAllBorrowBookDtoPageResult();
+        let result = new GetAllBorrowBookDetailDtoPageResult();
         result.init(json);
         return result;
     }
 }
 
-export interface IGetAllBorrowBookDtoPageResult {
+export interface IGetAllBorrowBookDetailDtoPageResult {
     count: number;
     pageIndex: number;
     pageSize: number;
-    items: GetAllBorrowBookDto[] | undefined;
+    items: GetAllBorrowBookDetailDto[] | undefined;
 }
 
-export class GetBorrowBookDetailDto implements IGetBorrowBookDetailDto {
+export class BorrowBookDetailDto implements IBorrowBookDetailDto {
     id: string;
-    book: string | undefined;
-    category: string | undefined;
-    author: string | undefined;
-    publisher: string | undefined;
+    bookName: string | undefined;
+    bookId: string;
     qty: number;
-    priceBorrow: number;
-    total: number;
+    dateBorrow: moment.Moment;
+    dateRepay: moment.Moment;
+    status: string | undefined;
+    userName: string | undefined;
+    userId: number;
+    note: string | undefined;
 
-    constructor(data?: IGetBorrowBookDetailDto) {
+    constructor(data?: IBorrowBookDetailDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -4705,86 +4701,21 @@ export class GetBorrowBookDetailDto implements IGetBorrowBookDetailDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
-            this.book = _data["book"];
-            this.category = _data["category"];
-            this.author = _data["author"];
-            this.publisher = _data["publisher"];
+            this.bookName = _data["bookName"];
+            this.bookId = _data["bookId"];
             this.qty = _data["qty"];
-            this.priceBorrow = _data["priceBorrow"];
-            this.total = _data["total"];
-        }
-    }
-
-    static fromJS(data: any): GetBorrowBookDetailDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetBorrowBookDetailDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["book"] = this.book;
-        data["category"] = this.category;
-        data["author"] = this.author;
-        data["publisher"] = this.publisher;
-        data["qty"] = this.qty;
-        data["priceBorrow"] = this.priceBorrow;
-        data["total"] = this.total;
-        return data; 
-    }
-
-    clone(): GetBorrowBookDetailDto {
-        const json = this.toJSON();
-        let result = new GetBorrowBookDetailDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IGetBorrowBookDetailDto {
-    id: string;
-    book: string | undefined;
-    category: string | undefined;
-    author: string | undefined;
-    publisher: string | undefined;
-    qty: number;
-    priceBorrow: number;
-    total: number;
-}
-
-export class GetBorrowBookDto implements IGetBorrowBookDto {
-    id: string;
-    borrowBookDetails: GetBorrowBookDetailDto[] | undefined;
-    status: string | undefined;
-    total: number;
-
-    constructor(data?: IGetBorrowBookDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            if (Array.isArray(_data["borrowBookDetails"])) {
-                this.borrowBookDetails = [] as any;
-                for (let item of _data["borrowBookDetails"])
-                    this.borrowBookDetails.push(GetBorrowBookDetailDto.fromJS(item));
-            }
+            this.dateBorrow = _data["dateBorrow"] ? moment(_data["dateBorrow"].toString()) : <any>undefined;
+            this.dateRepay = _data["dateRepay"] ? moment(_data["dateRepay"].toString()) : <any>undefined;
             this.status = _data["status"];
-            this.total = _data["total"];
+            this.userName = _data["userName"];
+            this.userId = _data["userId"];
+            this.note = _data["note"];
         }
     }
 
-    static fromJS(data: any): GetBorrowBookDto {
+    static fromJS(data: any): BorrowBookDetailDto {
         data = typeof data === 'object' ? data : {};
-        let result = new GetBorrowBookDto();
+        let result = new BorrowBookDetailDto();
         result.init(data);
         return result;
     }
@@ -4792,29 +4723,37 @@ export class GetBorrowBookDto implements IGetBorrowBookDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        if (Array.isArray(this.borrowBookDetails)) {
-            data["borrowBookDetails"] = [];
-            for (let item of this.borrowBookDetails)
-                data["borrowBookDetails"].push(item.toJSON());
-        }
+        data["bookName"] = this.bookName;
+        data["bookId"] = this.bookId;
+        data["qty"] = this.qty;
+        data["dateBorrow"] = this.dateBorrow ? this.dateBorrow.toISOString() : <any>undefined;
+        data["dateRepay"] = this.dateRepay ? this.dateRepay.toISOString() : <any>undefined;
         data["status"] = this.status;
-        data["total"] = this.total;
+        data["userName"] = this.userName;
+        data["userId"] = this.userId;
+        data["note"] = this.note;
         return data; 
     }
 
-    clone(): GetBorrowBookDto {
+    clone(): BorrowBookDetailDto {
         const json = this.toJSON();
-        let result = new GetBorrowBookDto();
+        let result = new BorrowBookDetailDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IGetBorrowBookDto {
+export interface IBorrowBookDetailDto {
     id: string;
-    borrowBookDetails: GetBorrowBookDetailDto[] | undefined;
+    bookName: string | undefined;
+    bookId: string;
+    qty: number;
+    dateBorrow: moment.Moment;
+    dateRepay: moment.Moment;
     status: string | undefined;
-    total: number;
+    userName: string | undefined;
+    userId: number;
+    note: string | undefined;
 }
 
 export class UserToken implements IUserToken {
@@ -5458,16 +5397,19 @@ export interface IUser {
     id: number;
 }
 
-export class BorrowBook implements IBorrowBook {
+export class BorrowBookDetail implements IBorrowBookDetail {
+    bookId: string;
+    book: Book;
+    qty: number;
     dateBorrow: moment.Moment;
     dateRepay: moment.Moment;
-    total: number;
     status: string | undefined;
     userId: number;
     user: User;
+    note: string | undefined;
     id: string;
 
-    constructor(data?: IBorrowBook) {
+    constructor(data?: IBorrowBookDetail) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5478,60 +5420,71 @@ export class BorrowBook implements IBorrowBook {
 
     init(_data?: any) {
         if (_data) {
+            this.bookId = _data["bookId"];
+            this.book = _data["book"] ? Book.fromJS(_data["book"]) : <any>undefined;
+            this.qty = _data["qty"];
             this.dateBorrow = _data["dateBorrow"] ? moment(_data["dateBorrow"].toString()) : <any>undefined;
             this.dateRepay = _data["dateRepay"] ? moment(_data["dateRepay"].toString()) : <any>undefined;
-            this.total = _data["total"];
             this.status = _data["status"];
             this.userId = _data["userId"];
             this.user = _data["user"] ? User.fromJS(_data["user"]) : <any>undefined;
+            this.note = _data["note"];
             this.id = _data["id"];
         }
     }
 
-    static fromJS(data: any): BorrowBook {
+    static fromJS(data: any): BorrowBookDetail {
         data = typeof data === 'object' ? data : {};
-        let result = new BorrowBook();
+        let result = new BorrowBookDetail();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["bookId"] = this.bookId;
+        data["book"] = this.book ? this.book.toJSON() : <any>undefined;
+        data["qty"] = this.qty;
         data["dateBorrow"] = this.dateBorrow ? this.dateBorrow.toISOString() : <any>undefined;
         data["dateRepay"] = this.dateRepay ? this.dateRepay.toISOString() : <any>undefined;
-        data["total"] = this.total;
         data["status"] = this.status;
         data["userId"] = this.userId;
         data["user"] = this.user ? this.user.toJSON() : <any>undefined;
+        data["note"] = this.note;
         data["id"] = this.id;
         return data; 
     }
 
-    clone(): BorrowBook {
+    clone(): BorrowBookDetail {
         const json = this.toJSON();
-        let result = new BorrowBook();
+        let result = new BorrowBookDetail();
         result.init(json);
         return result;
     }
 }
 
-export interface IBorrowBook {
+export interface IBorrowBookDetail {
+    bookId: string;
+    book: Book;
+    qty: number;
     dateBorrow: moment.Moment;
     dateRepay: moment.Moment;
-    total: number;
     status: string | undefined;
     userId: number;
     user: User;
+    note: string | undefined;
     id: string;
 }
 
 export class UpdateStatusDto implements IUpdateStatusDto {
     id: string;
+    bookId: string;
+    qty: number;
     dateBorrow: moment.Moment;
     dateRepay: moment.Moment;
-    total: number;
     status: string | undefined;
     userId: number;
+    note: string | undefined;
 
     constructor(data?: IUpdateStatusDto) {
         if (data) {
@@ -5545,11 +5498,13 @@ export class UpdateStatusDto implements IUpdateStatusDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.bookId = _data["bookId"];
+            this.qty = _data["qty"];
             this.dateBorrow = _data["dateBorrow"] ? moment(_data["dateBorrow"].toString()) : <any>undefined;
             this.dateRepay = _data["dateRepay"] ? moment(_data["dateRepay"].toString()) : <any>undefined;
-            this.total = _data["total"];
             this.status = _data["status"];
             this.userId = _data["userId"];
+            this.note = _data["note"];
         }
     }
 
@@ -5563,11 +5518,13 @@ export class UpdateStatusDto implements IUpdateStatusDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["bookId"] = this.bookId;
+        data["qty"] = this.qty;
         data["dateBorrow"] = this.dateBorrow ? this.dateBorrow.toISOString() : <any>undefined;
         data["dateRepay"] = this.dateRepay ? this.dateRepay.toISOString() : <any>undefined;
-        data["total"] = this.total;
         data["status"] = this.status;
         data["userId"] = this.userId;
+        data["note"] = this.note;
         return data; 
     }
 
@@ -5581,141 +5538,13 @@ export class UpdateStatusDto implements IUpdateStatusDto {
 
 export interface IUpdateStatusDto {
     id: string;
+    bookId: string;
+    qty: number;
     dateBorrow: moment.Moment;
     dateRepay: moment.Moment;
-    total: number;
     status: string | undefined;
     userId: number;
-}
-
-export class GetAllBorrowBookDetailDto implements IGetAllBorrowBookDetailDto {
-    id: string;
-    book: string | undefined;
-    qty: number;
-    priceBorrow: number;
-    total: number;
-
-    constructor(data?: IGetAllBorrowBookDetailDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.book = _data["book"];
-            this.qty = _data["qty"];
-            this.priceBorrow = _data["priceBorrow"];
-            this.total = _data["total"];
-        }
-    }
-
-    static fromJS(data: any): GetAllBorrowBookDetailDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetAllBorrowBookDetailDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["book"] = this.book;
-        data["qty"] = this.qty;
-        data["priceBorrow"] = this.priceBorrow;
-        data["total"] = this.total;
-        return data; 
-    }
-
-    clone(): GetAllBorrowBookDetailDto {
-        const json = this.toJSON();
-        let result = new GetAllBorrowBookDetailDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IGetAllBorrowBookDetailDto {
-    id: string;
-    book: string | undefined;
-    qty: number;
-    priceBorrow: number;
-    total: number;
-}
-
-export class BorrowBookDetailDto implements IBorrowBookDetailDto {
-    id: string;
-    bookName: string | undefined;
-    borrowBookId: string;
-    bookId: string;
-    qty: number;
-    urlImage: string | undefined;
-    priceBorrow: number;
-    total: number;
-
-    constructor(data?: IBorrowBookDetailDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.bookName = _data["bookName"];
-            this.borrowBookId = _data["borrowBookId"];
-            this.bookId = _data["bookId"];
-            this.qty = _data["qty"];
-            this.urlImage = _data["urlImage"];
-            this.priceBorrow = _data["priceBorrow"];
-            this.total = _data["total"];
-        }
-    }
-
-    static fromJS(data: any): BorrowBookDetailDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new BorrowBookDetailDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["bookName"] = this.bookName;
-        data["borrowBookId"] = this.borrowBookId;
-        data["bookId"] = this.bookId;
-        data["qty"] = this.qty;
-        data["urlImage"] = this.urlImage;
-        data["priceBorrow"] = this.priceBorrow;
-        data["total"] = this.total;
-        return data; 
-    }
-
-    clone(): BorrowBookDetailDto {
-        const json = this.toJSON();
-        let result = new BorrowBookDetailDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IBorrowBookDetailDto {
-    id: string;
-    bookName: string | undefined;
-    borrowBookId: string;
-    bookId: string;
-    qty: number;
-    urlImage: string | undefined;
-    priceBorrow: number;
-    total: number;
+    note: string | undefined;
 }
 
 export class GetAllCategoryDto implements IGetAllCategoryDto {
@@ -5921,7 +5750,6 @@ export interface IChangeUiThemeInput {
 export class GetBookLibraryDto implements IGetBookLibraryDto {
     id: string;
     name: string | undefined;
-    priceBorrow: number;
     stock: number;
     category: string | undefined;
     publisher: string | undefined;
@@ -5943,7 +5771,6 @@ export class GetBookLibraryDto implements IGetBookLibraryDto {
         if (_data) {
             this.id = _data["id"];
             this.name = _data["name"];
-            this.priceBorrow = _data["priceBorrow"];
             this.stock = _data["stock"];
             this.category = _data["category"];
             this.publisher = _data["publisher"];
@@ -5965,7 +5792,6 @@ export class GetBookLibraryDto implements IGetBookLibraryDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["name"] = this.name;
-        data["priceBorrow"] = this.priceBorrow;
         data["stock"] = this.stock;
         data["category"] = this.category;
         data["publisher"] = this.publisher;
@@ -5987,7 +5813,6 @@ export class GetBookLibraryDto implements IGetBookLibraryDto {
 export interface IGetBookLibraryDto {
     id: string;
     name: string | undefined;
-    priceBorrow: number;
     stock: number;
     category: string | undefined;
     publisher: string | undefined;
@@ -7058,10 +6883,12 @@ export interface IGetCurrentLoginInformationsOutput {
 export class StatisticReportDto implements IStatisticReportDto {
     categoryId: string;
     categoryName: string | undefined;
+    bookId: string;
     bookName: string | undefined;
     dateBorrow: moment.Moment;
     authorName: string | undefined;
     publisherName: string | undefined;
+    status: string | undefined;
     quantity: number;
 
     constructor(data?: IStatisticReportDto) {
@@ -7077,10 +6904,12 @@ export class StatisticReportDto implements IStatisticReportDto {
         if (_data) {
             this.categoryId = _data["categoryId"];
             this.categoryName = _data["categoryName"];
+            this.bookId = _data["bookId"];
             this.bookName = _data["bookName"];
             this.dateBorrow = _data["dateBorrow"] ? moment(_data["dateBorrow"].toString()) : <any>undefined;
             this.authorName = _data["authorName"];
             this.publisherName = _data["publisherName"];
+            this.status = _data["status"];
             this.quantity = _data["quantity"];
         }
     }
@@ -7096,10 +6925,12 @@ export class StatisticReportDto implements IStatisticReportDto {
         data = typeof data === 'object' ? data : {};
         data["categoryId"] = this.categoryId;
         data["categoryName"] = this.categoryName;
+        data["bookId"] = this.bookId;
         data["bookName"] = this.bookName;
         data["dateBorrow"] = this.dateBorrow ? this.dateBorrow.toISOString() : <any>undefined;
         data["authorName"] = this.authorName;
         data["publisherName"] = this.publisherName;
+        data["status"] = this.status;
         data["quantity"] = this.quantity;
         return data; 
     }
@@ -7115,10 +6946,12 @@ export class StatisticReportDto implements IStatisticReportDto {
 export interface IStatisticReportDto {
     categoryId: string;
     categoryName: string | undefined;
+    bookId: string;
     bookName: string | undefined;
     dateBorrow: moment.Moment;
     authorName: string | undefined;
     publisherName: string | undefined;
+    status: string | undefined;
     quantity: number;
 }
 

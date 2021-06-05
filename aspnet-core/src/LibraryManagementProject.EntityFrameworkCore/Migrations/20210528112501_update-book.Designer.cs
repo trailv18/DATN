@@ -3,14 +3,16 @@ using System;
 using LibraryManagementProject.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LibraryManagementProject.Migrations
 {
     [DbContext(typeof(LibraryManagementProjectDbContext))]
-    partial class LibraryManagementProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210528112501_update-book")]
+    partial class updatebook
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1559,9 +1561,6 @@ namespace LibraryManagementProject.Migrations
 
                     b.Property<DateTime>("DateRepay")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<int>("Qty")
                         .HasColumnType("int");

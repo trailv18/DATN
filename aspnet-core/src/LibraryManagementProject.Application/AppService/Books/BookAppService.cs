@@ -58,7 +58,6 @@ namespace LibraryManagementProject.AppService.Books
                 {
                     Id = c.Id,
                     Name = c.Name,
-                    PriceBorrow = c.PriceBorrow,
                     Stock = c.Stock,
                     Category = c.Category.Name,
                     Author = c.Author.Name,
@@ -90,7 +89,6 @@ namespace LibraryManagementProject.AppService.Books
             var book = new Book
             {
                 Name = input.Name,
-                PriceBorrow = input.PriceBorrow,
                 Stock = input.Stock,
                 CategoryId = input.CategoryId,
                 PublisherId = input.PublisherId,
@@ -129,7 +127,6 @@ namespace LibraryManagementProject.AppService.Books
 
             var data = await GetBookById(input.Id);
             data.Name = input.Name;
-            data.PriceBorrow = input.PriceBorrow;
             data.Stock = input.Stock;
             data.CategoryId = input.CategoryId;
             data.PublisherId = input.PublisherId;

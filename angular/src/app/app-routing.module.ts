@@ -14,11 +14,8 @@ import { PublisherComponent } from './publisher/publisher.component';
 import { BookComponent } from './book/book.component';
 import { LibraryComponent } from './library/library.component';
 import { BookDetailComponent } from './library/book-detail/book-detail.component';
-import { ListCartComponent } from './library/list-cart/list-cart.component';
-import { ReaderBorrowComponent } from './reader-borrow/reader-borrow.component';
-import { ReaderBorrowDetailComponent } from './reader-borrow/reader-borrow-detail/reader-borrow-detail.component';
-import { BorrowMComponent } from './borrow-m/borrow-m.component';
-import { BorrowDetailComponent } from './borrow-m/borrow-detail/borrow-detail.component';
+import { BorrowbookComponent } from './borrowbook/borrowbook.component';
+import { BorrowbookReaderComponent } from './borrowbook-reader/borrowbook-reader.component';
 import { StatisticReportComponent } from './statistic-report/statistic-report.component';
 
 @NgModule({
@@ -30,22 +27,19 @@ import { StatisticReportComponent } from './statistic-report/statistic-report.co
                 children: [
                     { path: 'home', component: LibraryComponent,  canActivate: [AppRouteGuard] },
                     { path: 'dashboard', component: HomeComponent, data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard] },
-                    { path: 'users', component: UsersComponent, data: { permission: 'Pages.Users' }, canActivate: [AppRouteGuard] },
-                    { path: 'roles', component: RolesComponent, data: { permission: 'Pages.Roles' }, canActivate: [AppRouteGuard] },
-                    { path: 'tenants', component: TenantsComponent, data: { permission: 'Pages.Tenants' }, canActivate: [AppRouteGuard] },
+                    { path: 'users', component: UsersComponent, data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard] },
+                    { path: 'roles', component: RolesComponent, data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard] },
+                    { path: 'tenants', component: TenantsComponent, data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard] },
                     { path: 'about', component: AboutComponent },
                     { path: 'update-password', component: ChangePasswordComponent },
                     { path: 'categories', component: CategoryComponent,data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard]},
                     { path: 'authors', component: AuthorComponent,data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard] },
                     { path: 'publishers', component: PublisherComponent,data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard] },
+                    { path: 'borrows', component: BorrowbookComponent,data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard]},
                     { path: 'books', component: BookComponent,data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard] },
-                    { path: 'statistic-report', component: StatisticReportComponent,data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard] },
-                    { path: 'borrows', component: BorrowMComponent,data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard] },
-                    { path: 'borrow-book-detail/:id', component: BorrowDetailComponent,data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard]},
-                    { path: 'book-detail/:bookId', component: BookDetailComponent },
-                    { path: 'cart', component: ListCartComponent, data: { permission: 'Pages.Readers' }, canActivate: [AppRouteGuard]},
-                    { path: 'reader-borrow', component: ReaderBorrowComponent, data: { permission: 'Pages.Readers' }, canActivate: [AppRouteGuard] },
-                    { path: 'reader-borrow-detail/:id', component: ReaderBorrowDetailComponent, data: { permission: 'Pages.Readers' }, canActivate: [AppRouteGuard]},
+                    { path: 'book-detail/:bookId', component: BookDetailComponent},
+                    { path: 'statistic-report-category', component: StatisticReportComponent,data: { permission: 'Pages.Librarians' }, canActivate: [AppRouteGuard] },
+                    { path: 'borrows-reader', component: BorrowbookReaderComponent,data: { permission: 'Pages.Readers' }, canActivate: [AppRouteGuard] },
                 ]
             }
         ])

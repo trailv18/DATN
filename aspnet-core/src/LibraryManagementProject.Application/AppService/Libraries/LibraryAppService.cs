@@ -35,7 +35,6 @@ namespace LibraryManagementProject.AppService.Libraries
                 {
                     Id = c.Id,
                     Name = c.Name,
-                    PriceBorrow = c.PriceBorrow,
                     Stock = c.Stock,
                     Category = c.Category.Name,
                     Author = c.Author.Name,
@@ -69,7 +68,6 @@ namespace LibraryManagementProject.AppService.Libraries
                     {
                         Id = value.Id,
                         Name = value.Name,
-                        PriceBorrow = value.PriceBorrow,
                         Stock = value.Stock,
                         Category = value.Category.Name,
                         Author = value.Author.Name,
