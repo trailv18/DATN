@@ -43,7 +43,7 @@ namespace LibraryManagementProject.AppService.Libraries
                     Description = c.Description,
                     Year = c.Year
                 })
-                .OrderBy(x => x.Name);
+                .OrderByDescending(x => x.Name);
 
             count = values.Count();
 

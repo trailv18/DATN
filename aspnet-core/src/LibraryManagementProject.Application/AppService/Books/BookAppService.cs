@@ -66,7 +66,7 @@ namespace LibraryManagementProject.AppService.Books
                     Description = c.Description,
                     Year = c.Year
                 })
-                .OrderBy(x => x.Name);
+                .OrderByDescending(x => x.Name);
 
             count = values.Count();
 
@@ -126,6 +126,7 @@ namespace LibraryManagementProject.AppService.Books
             List<string> errorList = new List<string>();
 
             var data = await GetBookById(input.Id);
+
             data.Name = input.Name;
             data.Stock = input.Stock;
             data.CategoryId = input.CategoryId;

@@ -114,9 +114,7 @@ export class EditBookComponent extends AppComponentBase implements OnInit {
     this._bookService
       .updateBook(this.book)
       .pipe(
-        finalize(() => {
-          console.log(this.book.urlImage);
-          
+        finalize(() => {          
           this.saving = false;
         })
       )

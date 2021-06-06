@@ -3,7 +3,6 @@ using LibraryManagementProject.Entity.Authors;
 using LibraryManagementProject.Entity.Categories;
 using LibraryManagementProject.Entity.Publishers;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibraryManagementProject.Entity.Books
@@ -22,6 +21,5 @@ namespace LibraryManagementProject.Entity.Books
         public string Description { get; set; }
         public string UrlImage { get; set; }
         public string Year { get; set; }
-
     }
 }
