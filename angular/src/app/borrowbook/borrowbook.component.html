@@ -74,7 +74,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor=" let borrowBook of borrows | 
+                <tr *ngFor="let borrowBook of borrows | 
                   paginate: { itemsPerPage: pageSize, currentPage: pageNumber, totalItems:count }; 
                   let index = index"
                   >
@@ -89,10 +89,10 @@
                   <td>{{borrowBook.userName}}</td>  
                   <td>{{borrowBook.note}}</td>   
                   <td class="d-flex">
-                    <button type="button" class="btn btn-sm badge-info mx-2 d-flex align-items-center" (click)="updateStatus(borrowBook)">
+                    <button type="button" class="btn btn-sm badge-info mx-2 d-flex align-items-center" [disabled]="borrowBook.status == 'Đã trả' || borrowBook.status == 'Quá hạn'" (click)="updateStatus(borrowBook)">
                       <i class="far fa-edit"></i>
                     </button>
-                    <button type="button" class="btn btn-sm bg-danger mx-2 d-flex align-items-center" (click)="delete(borrowBook)">
+                    <button type="button" class="btn btn-sm bg-danger mx-2 d-flex align-items-center" [disabled]="borrowBook.status == 'Đang mượn' || borrowBook.status == 'Đã trả' || borrowBook.status == 'Quá hạn'" (click)="delete(borrowBook)">
                       <i class="fas fa-trash-alt"></i>
                     </button>
                   </td>           

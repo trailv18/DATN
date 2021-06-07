@@ -51,6 +51,7 @@ namespace LibraryManagementProject.AppService.Statistic_Report
                             AuthorName = book != null ? book.Author.Name : null,
                             PublisherName = book != null ? book.Publisher.Name : null,
                             DateBorrow = borrowDetail.DateBorrow,
+                            Status = borrowDetail.Status,
                             Qty = borrowDetail != null ? borrowDetail.Qty : 0
                         })
                        .ToList()
