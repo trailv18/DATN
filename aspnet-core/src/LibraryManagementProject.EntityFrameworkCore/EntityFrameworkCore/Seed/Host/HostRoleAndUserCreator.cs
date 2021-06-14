@@ -76,7 +76,7 @@ namespace LibraryManagementProject.EntityFrameworkCore.Seed.Host
                     UserName = AbpUserBase.AdminUserName,
                     Name = "admin",
                     Surname = "admin",
-                    EmailAddress = "admin@aspnetboilerplate.com",
+                    EmailAddress = "admin@librarymanagement.com",
                     IsEmailConfirmed = true,
                     IsActive = true
                 };

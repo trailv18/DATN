@@ -32,7 +32,7 @@
                   <td>{{borrowBook.bookName}}</td>
                   <td>{{borrowBook.dateBorrow.format("YYYY/MM/DD")}}</td>
                   <td>{{borrowBook.dateRepay.format("YYYY/MM/DD")}}</td>
-                  <td><label class="badge badge-info">{{borrowBook.status}}</label></td>
+                  <td><label [ngClass]="{'badge-success': borrowBook.status ==='Đã trả', 'badge-info': borrowBook.status ==='Đang mượn', 'badge-danger': borrowBook.status ==='Quá hạn', 'badge-secondary': borrowBook.status ==='Đang xử lý'}" class="badge ">{{borrowBook.status}}</label></td>
                   <td>{{borrowBook.note}}</td>    
                 </tr>
               </tbody>

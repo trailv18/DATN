@@ -73,7 +73,7 @@ export class BorrowbookComponent extends AppComponentBase implements OnInit{
 
 
   filter(){
-    if(!this.fromDate && !this.toDate){
+    if(!this.fromDate && !this.toDate && !this.month){
       this.list();      
     }
     else{

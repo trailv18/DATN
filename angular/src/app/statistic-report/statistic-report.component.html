@@ -77,14 +77,14 @@
                                 <thead class="bg-light">
                                     <tr>
                                         <th>Category</th>
-                                        <th>Quantity</th>
+                                        <th>Quantity Borrow</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr
                                         *ngFor=" let st of statistics | paginate: { itemsPerPage: pageSize, currentPage: pageIndex, totalItems:count }">
-                                        <td>{{ st.categoryName }}</td>
-                                        <td>{{ st.quantity }}</td>
+                                        <td>{{st.categoryName }}</td>
+                                        <td>{{st.quantity}}</td>
                                     </tr>
                                     <th class="col"><button type="button" class="btn btn-sm bg-secondary"
                                             (click)="chart()">Chart</button></th>
@@ -163,17 +163,23 @@
                         </div>
 
                         <div class="card-body table-responsive p-0">
-                            <table class="table table-hover text-nowrap">
+                            <table class="table">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th>Book Name</th>
-                                        <th>Quantity</th>
+                                        <th scope="col">Book Name</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Publisher</th>
+                                        <th scope="col">Number of borrowers</th>
+                                        <th scope="col">Quantity</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr
                                         *ngFor=" let list of listBorrows | paginate: { itemsPerPage: pageSize, currentPage: pageIndex, totalItems:count }">
                                         <td>{{ list.bookName }}</td>
+                                        <td>{{list.categoryName}}</td>
+                                        <td>{{list.publisherName}}</td>
+                                        <td>{{list.quantityUser}}</td>
                                         <td>{{ list.quantity }}</td>
                                     </tr>
                                 </tbody>

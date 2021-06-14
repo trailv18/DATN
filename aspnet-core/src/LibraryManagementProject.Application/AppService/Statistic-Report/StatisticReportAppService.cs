@@ -106,8 +106,10 @@ namespace LibraryManagementProject.AppService.Statistic_Report
                             BookName = book.Name,
                             AuthorName = book.Author.Name,
                             PublisherName = book.Publisher.Name,
+                            CategoryName = book.Category.Name,
                             DateBorrow = borrowDetail.DateBorrow,
                             Qty = borrowDetail.Qty,
+                            UserId = borrowDetail != null ? borrowDetail.UserId : 0,
                             Status = borrowDetail.Status
                         })
                        .ToList()
@@ -126,6 +128,8 @@ namespace LibraryManagementProject.AppService.Statistic_Report
                            BookName = x.Select(x => x.BookName).FirstOrDefault(),
                            AuthorName = x.Select(x => x.AuthorName).FirstOrDefault(),
                            PublisherName = x.Select(x => x.PublisherName).FirstOrDefault(),
+                           CategoryName = x.Select(x => x.CategoryName).FirstOrDefault(),
+                           QuantityUser = x.Select(a => a.UserId).Distinct().Where(a => a != 0).Count(),
                            Quantity = x.Sum(x => x.Qty),
                        }).OrderByDescending(x => x.Quantity);
 

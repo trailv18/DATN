@@ -15,5 +15,6 @@ namespace LibraryManagementProject.AppService.Statistic_Report.Dto
         public string PublisherName { get; set; }
         public string Status { get; set; }
         public int Quantity { get; set; }
+        public long QuantityUser { get; set; }
     }
 }

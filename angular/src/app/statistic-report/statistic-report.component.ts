@@ -92,7 +92,7 @@ export class StatisticReportComponent extends AppComponentBase implements OnInit
         this.statistics = response.items;
         this.count = response.count;
         this.pageIndex = response.pageIndex;
-        this.pageSize = response.pageSize;        
+        this.pageSize = response.pageSize;                        
       }
       );
   }
@@ -138,7 +138,7 @@ export class StatisticReportComponent extends AppComponentBase implements OnInit
         this.listBorrows= response.items;
         this.count = response.count;
         this.pageIndex = response.pageIndex;
-        this.pageSize = response.pageSize;        
+        this.pageSize = response.pageSize;                
       }
       );
   }

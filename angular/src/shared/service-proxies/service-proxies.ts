@@ -6890,6 +6890,7 @@ export class StatisticReportDto implements IStatisticReportDto {
     publisherName: string | undefined;
     status: string | undefined;
     quantity: number;
+    quantityUser: number;
 
     constructor(data?: IStatisticReportDto) {
         if (data) {
@@ -6911,6 +6912,7 @@ export class StatisticReportDto implements IStatisticReportDto {
             this.publisherName = _data["publisherName"];
             this.status = _data["status"];
             this.quantity = _data["quantity"];
+            this.quantityUser = _data["quantityUser"];
         }
     }
 
@@ -6932,6 +6934,7 @@ export class StatisticReportDto implements IStatisticReportDto {
         data["publisherName"] = this.publisherName;
         data["status"] = this.status;
         data["quantity"] = this.quantity;
+        data["quantityUser"] = this.quantityUser;
         return data; 
     }
 
@@ -6953,6 +6956,7 @@ export interface IStatisticReportDto {
     publisherName: string | undefined;
     status: string | undefined;
     quantity: number;
+    quantityUser: number;
 }
 
 export class StatisticReportDtoPageResult implements IStatisticReportDtoPageResult {

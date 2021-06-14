@@ -39,7 +39,7 @@ namespace LibraryManagementProject.AppService.BorrowBookDetails
             var count = 0;
             var values = _borrowBookDetailRepository
                 .GetAll()
-                .WhereIf(fromDate.HasValue && toDate.HasValue || month != null, x => x.DateBorrow.Date >= fromDate && x.DateRepay.Date <= toDate || x.DateBorrow.Month == month)
+                .WhereIf(fromDate.HasValue && toDate.HasValue || month != null, x => x.DateBorrow.Date >= fromDate && x.DateBorrow.Date <= toDate || x.DateBorrow.Month == month)
                 .Select(result => new GetAllBorrowBookDetailDto
                 {
                     Id = result.Id,
@@ -47,7 +47,7 @@ namespace LibraryManagementProject.AppService.BorrowBookDetails
                     DateBorrow = result.DateBorrow,
                     DateRepay = result.DateRepay,
                     Status = result.Status,
-                    UserName = result.User.UserName,
+                    UserName = result.User.FullName,
                     Note = result.Note
                 }).OrderByDescending(x => x.DateBorrow);
 
